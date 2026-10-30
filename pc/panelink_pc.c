@@ -141,6 +141,7 @@ static int g_gpu_count;
 static BatteryInfo g_battery;
 static float g_cpu_voltage = -1.0f;
 static float g_cpu_power = -1.0f;
+static void sample_lhm(void);
 
 static FanInfo g_fans[8];
 static int g_fan_count;
