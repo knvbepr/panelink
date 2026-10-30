@@ -13,7 +13,7 @@ import java.util.Locale;
 /** Two-column settings sheet with wide rows and large +/- targets. */
 public final class SettingsOverlayView extends View {
 
-    private static final String VERSION = "1.5.1";
+    private static final String VERSION = "1.5.2";
 
     public interface Listener {
         void onSettingsChanged();
@@ -219,19 +219,20 @@ public final class SettingsOverlayView extends View {
         drawCjk(canvas, "开源组件", left + ui, top + ui * 8, ui, DashUi.WHITE);
 
         String[] licenses = {
-                "AndroidX / AppCompat      Apache-2.0",
-                "DSEG7 Classic             SIL OFL 1.1",
-                "JetBrains Mono            SIL OFL 1.1",
+                "PANELINK code             Apache-2.0",
+                "AndroidX / AppCompat      Apache-2.0 (Google)",
+                "DSEG7 Classic             OFL-1.1 (Keshikan)",
+                "JetBrains Mono            OFL-1.1 (JetBrains)",
                 "WenQuanYi Bitmap Song     GPL-2.0 + font exception",
-                "LibreHardwareMonitor      MPL-2.0",
+                "LibreHardwareMonitor      MPL-2.0 (PhyxionNL)",
         };
         int y = top + ui * 10;
         for (String line : licenses) {
             drawMono(canvas, line, left + ui, y, ui / 2 + ui / 3, DashUi.WHITE_60);
             y += ui + ui / 2;
         }
-        drawMono(canvas, "Source: github.com/knvbepr/panelink", left + ui, y,
-                ui / 2 + ui / 3, DashUi.WHITE_30);
+        drawMono(canvas, "Licences: LICENSES/  Source: github.com/knvbepr/panelink",
+                left + ui, y, ui / 2 + ui / 3, DashUi.WHITE_30);
 
         int btnW = Math.min(dw / 3, ui * 8);
         int btnH = ui * 2 + ui / 2;

@@ -18,3 +18,5 @@ local.properties
 /release-pc/
 /panelink-v*.apk
 /panelink-pc-windows*.zip
+/pc/lhm/
+/pc/panelink_pc.exe

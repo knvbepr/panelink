@@ -1,29 +1,30 @@
 # PANELINK third-party notices
 
-PANELINK itself is an original project by **knvbepr** (GitHub: `knvbepr`).
+PANELINK original code is licensed under the **Apache License 2.0** (see `LICENSE`).
+Author: **knvbepr** (GitHub: https://github.com/knvbepr).
 
-The following open-source components are used. Full license texts are available at the
-linked project pages; this file records the component, copyright holder and license.
+The following components are included or used. Full license texts are in `LICENSES/`.
 
-| Component | Used by | License |
-|---|---|---|
-| AndroidX / AppCompat | Android app | Apache License 2.0 |
-| DSEG7 Classic | Android numeric font | SIL Open Font License 1.1 (Keshikan) |
-| JetBrains Mono | Android labels | SIL Open Font License 1.1 (JetBrains) |
-| WenQuanYi Bitmap Song 16px | Android Chinese pixel UI | GNU GPL v2 with font embedding exception (WenQuanYi) |
-| org.json | Android remote parser | Apache License 2.0 |
-| LibreHardwareMonitor | Optional PC sensor bridge | Mozilla Public License 2.0 (PhyxionNL) |
+| Component | Copyright | License | Used by |
+|---|---|---|---|
+| AndroidX / AppCompat | Google LLC | Apache-2.0 | Android |
+| DSEG7 Classic | Keshikan (2017) | SIL OFL 1.1 | Android digits |
+| JetBrains Mono | JetBrains s.r.o. | SIL OFL 1.1 | Android labels |
+| WenQuanYi Bitmap Song 16px | WenQuanYi Project | GPL-2.0 with font embedding exception | Android Chinese |
+| org.json | Android Open Source Project | Apache-2.0 | Android remote parser |
+| LibreHardwareMonitor | PhyxionNL and contributors | MPL-2.0 | Optional PC sensor bridge |
 
-No third-party chart or UI framework is used by the Android panel; charts are drawn with
-the Android `Canvas` API. The PC service uses Win32/WinHTTP and the optional
-LibreHardwareMonitor local web server.
+Android charts and layout are drawn with the Android `Canvas` API; no third-party chart
+framework is used. The PC service uses Win32/WinHTTP. LibreHardwareMonitor is optional and
+is distributed as a separate portable folder in the PC release.
 
-License texts:
+## Full texts
 
-- Apache-2.0: https://www.apache.org/licenses/LICENSE-2.0
-- SIL OFL 1.1: https://scripts.sil.org/OFL
-- GPL-2.0: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-- MPL-2.0: https://www.mozilla.org/MPL/2.0/
+- `LICENSES/Apache-2.0.txt`
+- `LICENSES/OFL-1.1.txt`
+- `LICENSES/OFL-1.1-DSEG.txt`
+- `LICENSES/GPL-2.0-WenQuanYi.txt`
+- `LICENSES/MPL-2.0.txt`
 
-PANELINK source: https://github.com/knvbepr/panelink
+Project: https://github.com/knvbepr/panelink  
 Design language: https://github.com/knvbepr/mono-hmi
