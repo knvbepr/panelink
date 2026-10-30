@@ -11,6 +11,8 @@ public final class PanelData {
     public float cpuTotal;
     public float[] cpuCores = new float[0];
     public int[] cpuFreqMhz = new int[0];
+    public float cpuVoltage = -1f;
+    public float cpuPowerW = -1f;
     public int coreCount;
 
     public long memTotalKb;

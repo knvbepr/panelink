@@ -83,6 +83,18 @@ public final class CpuPanelView extends PanelView {
             String mode = perCore ? "分核" : "总占用";
             int hintX = pad + (int) cjk.measureText("CPU") + ui;
             drawCjk(canvas, mode, hintX, titleBaseline(), ui, DashUi.WHITE_60);
+            if (data.cpuVoltage > 0 || data.cpuPowerW > 0) {
+                String extra = "";
+                if (data.cpuVoltage > 0) {
+                    extra = String.format(Locale.US, "%.2fV", data.cpuVoltage);
+                }
+                if (data.cpuPowerW > 0) {
+                    extra += (extra.isEmpty() ? "" : " ")
+                            + String.format(Locale.US, "%.1fW", data.cpuPowerW);
+                }
+                drawMono(canvas, extra, hintX + (int) cjk.measureText(mode) + ui,
+                        titleBaseline(), ui / 2 + ui / 3, DashUi.WHITE_60);
+            }
         }
 
         int left = pad;

@@ -33,6 +33,7 @@
 #include <string.h>
 #include <time.h>
 #include <math.h>
+#include <winhttp.h>
 
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "pdh.lib")
@@ -43,6 +44,7 @@
 #pragma comment(lib, "wbemuuid.lib")
 #pragma comment(lib, "powrprof.lib")
 #pragma comment(lib, "advapi32.lib")
+#pragma comment(lib, "winhttp.lib")
 
 #ifndef PROCESSOR_INFORMATION_CLASS
 #define PROCESSOR_INFORMATION_CLASS 11
@@ -137,6 +139,8 @@ static GpuInfo g_gpus[8];
 static int g_gpu_count;
 
 static BatteryInfo g_battery;
+static float g_cpu_voltage = -1.0f;
+static float g_cpu_power = -1.0f;
 
 static FanInfo g_fans[8];
 static int g_fan_count;
@@ -740,6 +744,7 @@ static void collect_state(void) {
     sample_battery();
     sample_wmi();
     fill_extra_sensors();
+    sample_lhm();
 }
 
 static void build_json(char *buf, size_t cap) {
@@ -758,7 +763,8 @@ static void build_json(char *buf, size_t cap) {
         }
         int maxf = 0;
         for (int i = 0; i < g_core_count; i++) if (g_freq_mhz[i] > maxf) maxf = g_freq_mhz[i];
-        append(buf, cap, "],\"freq\":%d}", maxf);
+        append(buf, cap, "],\"freq\":%d,\"voltage\":%.2f,\"power\":%.1f}",
+               maxf, g_cpu_voltage, g_cpu_power);
     }
     if (g_send_mem) {
         MEMORYSTATUSEX mem;
@@ -815,6 +821,183 @@ static void build_json(char *buf, size_t cap) {
         append(buf, cap, "]");
     }
     append(buf, cap, "}\n");
+}
+
+/* --------------------------------------------------------- LibreHardwareMonitor */
+
+static float lhm_metric(const char *text, const char *metric, const char *sensor,
+                        int *found) {
+    float value = -1;
+    *found = 0;
+    const char *p = text;
+    size_t metric_len = strlen(metric);
+    while ((p = strstr(p, metric)) != NULL) {
+        const char *line_end = strchr(p, '\n');
+        if (!line_end) line_end = p + strlen(p);
+        if (p == text || p[-1] == '\n') {
+            if (!sensor || (strstr(p, "\"sensorName\"=\"") != NULL &&
+                            strstr(p, sensor) != NULL &&
+                            strstr(p, sensor) < line_end)) {
+                const char *close = memchr(p, '}', (size_t) (line_end - p));
+                if (close) {
+                    char *end = NULL;
+                    double v = strtod(close + 1, &end);
+                    if (end && end > close + 1) {
+                        value = (float) v;
+                        *found = 1;
+                        return value;
+                    }
+                }
+            }
+        }
+        p += metric_len;
+    }
+    return value;
+}
+
+static void lhm_add_temp_front(const char *name, float c) {
+    if (g_temp_count >= 8 || c <= 0) return;
+    for (int i = g_temp_count; i > 0; i--) g_temps[i] = g_temps[i - 1];
+    snprintf(g_temps[0].name, sizeof(g_temps[0].name), "%s", name);
+    g_temps[0].celsius = c;
+    g_temp_count++;
+}
+
+static void lhm_add_fan_front(const char *name, int rpm) {
+    if (g_fan_count >= 8 || rpm <= 0) return;
+    for (int i = g_fan_count; i > 0; i--) g_fans[i] = g_fans[i - 1];
+    snprintf(g_fans[0].name, sizeof(g_fans[0].name), "%s", name);
+    g_fans[0].value = rpm;
+    g_fans[0].percent = 0;
+    g_fan_count++;
+}
+
+static void sample_lhm(void) {
+    static DWORD last = 0;
+    DWORD now = GetTickCount();
+    if (last && now - last < 900) return;
+    last = now;
+
+    HINTERNET session = WinHttpOpen(L"PANELINK/1.0", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
+                                    WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
+    if (!session) return;
+    WinHttpSetTimeouts(session, 300, 300, 300, 300);
+    HINTERNET connect = WinHttpConnect(session, L"127.0.0.1", 8085, 0);
+    if (!connect) {
+        WinHttpCloseHandle(session);
+        return;
+    }
+    HINTERNET request = WinHttpOpenRequest(connect, L"GET", L"/metrics", NULL,
+                                           WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, 0);
+    if (!request) {
+        WinHttpCloseHandle(connect);
+        WinHttpCloseHandle(session);
+        return;
+    }
+    BOOL ok = WinHttpSendRequest(request, WINHTTP_NO_ADDITIONAL_HEADERS, 0,
+                                 WINHTTP_NO_REQUEST_DATA, 0, 0, 0) &&
+              WinHttpReceiveResponse(request, NULL);
+    char *body = NULL;
+    size_t used = 0;
+    if (ok) {
+        size_t capacity = 1 << 18;
+        body = (char *) malloc(capacity);
+        if (body) {
+            DWORD available = 0;
+            while (WinHttpQueryDataAvailable(request, &available) && available > 0) {
+                if (used + available + 1 > capacity) {
+                    capacity = (used + available + 1) * 2;
+                    char *grown = (char *) realloc(body, capacity);
+                    if (!grown) break;
+                    body = grown;
+                }
+                DWORD read = 0;
+                if (!WinHttpReadData(request, body + used, available, &read)) break;
+                used += read;
+                body[used] = 0;
+            }
+        }
+    }
+    WinHttpCloseHandle(request);
+    WinHttpCloseHandle(connect);
+    WinHttpCloseHandle(session);
+    if (!body || used == 0) {
+        free(body);
+        return;
+    }
+
+    int found = 0;
+    float temp = lhm_metric(body, "lhm_cpu_temperature_celsius", "Core (Tctl/Tdie)", &found);
+    if (!found) temp = lhm_metric(body, "lhm_cpu_temperature_celsius", NULL, &found);
+    if (found && g_temp_count < 8) {
+        lhm_add_temp_front("CPU", temp);
+    }
+
+    float power = lhm_metric(body, "lhm_cpu_power_watts", "Package", &found);
+    if (found) g_cpu_power = power;
+
+    /* Average all per-core VID rails as the CPU voltage. */
+    float volt_sum = 0;
+    int volt_count = 0;
+    const char *p = body;
+    while ((p = strstr(p, "lhm_cpu_voltage_volts")) != NULL) {
+        const char *line_end = strchr(p, '\n');
+        if (!line_end) break;
+        if ((p == body || p[-1] == '\n') && strstr(p, "\"sensorName\"=\"Core ") != NULL) {
+            const char *close = memchr(p, '}', (size_t) (line_end - p));
+            if (close) {
+                float v = (float) strtod(close + 1, NULL);
+                if (v > 0.1f && v < 2.0f) {
+                    volt_sum += v;
+                    volt_count++;
+                }
+            }
+        }
+        p = line_end;
+    }
+    if (volt_count) g_cpu_voltage = volt_sum / volt_count;
+
+    /* Fan sensors, if the hardware exposes them through LHM. */
+    p = body;
+    while ((p = strstr(p, "lhm_fan_speed_rpm")) != NULL) {
+        const char *line_end = strchr(p, '\n');
+        if (!line_end) break;
+        if (p == body || p[-1] == '\n') {
+            const char *close = memchr(p, '}', (size_t) (line_end - p));
+            if (close) {
+                int rpm = (int) strtod(close + 1, NULL);
+                if (rpm > 0) {
+                    char name[64] = "FAN";
+                    const char *sn = strstr(p, "\"sensorName\"=\"");
+                    if (sn && sn < close) {
+                        sn += strlen("\"sensorName\"=\"");
+                        const char *end = strchr(sn, '"');
+                        if (end && end < close) {
+                            size_t n = (size_t) (end - sn);
+                            if (n > sizeof(name) - 1) n = sizeof(name) - 1;
+                            memcpy(name, sn, n);
+                            name[n] = 0;
+                        }
+                    }
+                    lhm_add_fan_front(name, rpm);
+                }
+            }
+        }
+        p = line_end;
+    }
+
+    int battery_found = 0;
+    float amps = lhm_metric(body, "lhm_battery_current_amperes", NULL, &battery_found);
+    if (battery_found) {
+        g_battery.current_ma = (int) (amps * 1000.0f);
+        g_battery.present = 1;
+    }
+    float level = lhm_metric(body, "lhm_battery_level_percent", NULL, &battery_found);
+    if (battery_found) {
+        g_battery.pct = (int) level;
+        g_battery.present = 1;
+    }
+    free(body);
 }
 
 /* --------------------------------------------------------------- network */

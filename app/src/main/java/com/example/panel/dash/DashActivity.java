@@ -194,6 +194,8 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
                 data.cpuTotal = remoteData.cpuTotal;
                 data.cpuCores = remoteData.cpuCores;
                 data.cpuFreqMhz = remoteData.cpuFreqMhz;
+                data.cpuVoltage = remoteData.cpuVoltage;
+                data.cpuPowerW = remoteData.cpuPowerW;
                 data.coreCount = remoteData.coreCount;
                 data.memTotalKb = remoteData.memTotalKb;
                 data.memUsedKb = remoteData.memUsedKb;
@@ -214,6 +216,8 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
                 data.cpuTotal = 0;
                 data.cpuCores = new float[0];
                 data.cpuFreqMhz = new int[0];
+                data.cpuVoltage = -1f;
+                data.cpuPowerW = -1f;
                 data.memTotalKb = 0;
                 data.memUsedKb = 0;
                 data.gpus.clear();

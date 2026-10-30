@@ -260,6 +260,8 @@ public final class RemoteClient {
         JSONObject cpu = root.optJSONObject("cpu");
         if (cpu != null) {
             data.cpuTotal = (float) cpu.optDouble("usage", 0);
+            data.cpuVoltage = (float) cpu.optDouble("voltage", -1);
+            data.cpuPowerW = (float) cpu.optDouble("power", -1);
             JSONArray cores = cpu.optJSONArray("cores");
             if (cores != null) {
                 data.cpuCores = new float[cores.length()];
