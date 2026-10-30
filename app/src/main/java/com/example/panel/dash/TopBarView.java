@@ -190,14 +190,15 @@ public final class TopBarView extends View {
                         : data.root ? DashUi.WHITE_60 : DashUi.AMBER);
 
         int battRight = rootRight - ui * 5;
-        int pctSize = ui + ui / 2;
+        boolean compact = w < 1200;
+        int pctSize = compact ? ui + ui / 4 : ui + ui / 2;
         int pctBase = h / 2 + pctSize / 2;
         String pctText = String.format(Locale.US, "%03d", Math.max(0, data.batteryPct));
         dseg.setTextSize(pctSize);
         int pctWidth = (int) dseg.measureText(pctText);
         mono.setTextSize(ui);
         int unitWidth = (int) mono.measureText("%");
-        int batW = ui * 5 / 2;
+        int batW = compact ? ui * 2 : ui * 5 / 2;
         int batH = pctSize;
         int pctRight = battRight - unitWidth - 2;
         int batX = pctRight - pctWidth - ui / 2 - batW;
@@ -208,20 +209,28 @@ public final class TopBarView extends View {
         drawDseg(canvas, pctText, pctRight - pctWidth, pctBase, pctSize, pctColor);
         drawMono(canvas, "%", battRight, pctBase, ui, DashUi.WHITE_60);
 
-        int currentRight = batX - ui;
+        int currentRight = batX - ui / 2;
         if (data.batteryCurrentValid) {
-            String state = data.batteryStatus == android.os.BatteryManager.BATTERY_STATUS_FULL
-                    ? "已满" : data.charging ? "充电" : "放电";
+            String state = compact
+                    ? (data.charging ? "充" : "放")
+                    : (data.batteryStatus == android.os.BatteryManager.BATTERY_STATUS_FULL
+                    ? "已满" : data.charging ? "充电" : "放电");
             String current = String.valueOf(data.batteryCurrentMa);
+            int stateSize = compact ? ui : ui;
+            cjk.setTextSize(stateSize);
             int stateW = (int) cjk.measureText(state);
-            int currentW = (int) dseg.measureText(current) + (int) mono.measureText("mA");
-            int total = stateW + ui / 2 + currentW;
+            dseg.setTextSize(ui);
+            int currentW = (int) dseg.measureText(current);
+            mono.setTextSize(ui);
+            int unitW = (int) mono.measureText("mA");
+            int gap = compact ? ui / 4 : ui / 2;
+            int total = stateW + gap + currentW + unitW;
             int start = currentRight - total;
-            drawCjk(canvas, state, start, smallBase, ui,
+            drawCjk(canvas, state, start, smallBase, stateSize,
                     data.charging ? DashUi.GREEN : DashUi.WHITE_60);
-            drawDseg(canvas, current, start + stateW + ui / 2, smallBase, ui, DashUi.WHITE);
-            drawMono(canvas, "mA", start + stateW + ui / 2 + (int) dseg.measureText(current),
-                    smallBase, ui, DashUi.WHITE_60);
+            drawDseg(canvas, current, start + stateW + gap, smallBase, ui, DashUi.WHITE);
+            drawMono(canvas, "mA", start + stateW + gap + currentW, smallBase, ui,
+                    DashUi.WHITE_60);
         }
     }
 

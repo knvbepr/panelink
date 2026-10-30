@@ -21,6 +21,8 @@ public final class SettingsOverlayView extends View {
         void onDiscoverRequested();
 
         void onEditHostRequested();
+
+        void onExitRequested();
     }
 
     private static final int ROW_REMOTE = 0;
@@ -50,6 +52,10 @@ public final class SettingsOverlayView extends View {
     private final Rect[] plusRects = new Rect[ROWS];
     private final Rect backRect = new Rect();
     private final Rect hostEditRect = new Rect();
+    private final Rect exitDialogRect = new Rect();
+    private final Rect exitCancelRect = new Rect();
+    private final Rect exitOkRect = new Rect();
+    private boolean confirmExit;
 
     private int rowH;
     private int labelSize;
@@ -157,6 +163,60 @@ public final class SettingsOverlayView extends View {
         canvas.drawRect(backRect, p);
         drawCjk(canvas, "返回", backRect.left + ui / 2,
                 backRect.centerY() + labelSize / 3, labelSize, DashUi.WHITE);
+        if (confirmExit) {
+            drawExitConfirm(canvas, w, h);
+        }
+    }
+
+    private void drawExitConfirm(Canvas canvas, int w, int h) {
+        p.setStyle(Paint.Style.FILL);
+        p.setColor(0xB0000000);
+        canvas.drawRect(0, 0, w, h, p);
+
+        int dw = Math.min(w * 3 / 5, ui * 40);
+        int dh = Math.min(h / 3, ui * 12);
+        int left = (w - dw) / 2;
+        int top = (h - dh) / 2;
+        exitDialogRect.set(left, top, left + dw, top + dh);
+
+        p.setColor(DashUi.BLACK);
+        canvas.drawRect(exitDialogRect, p);
+        p.setStyle(Paint.Style.STROKE);
+        p.setStrokeWidth(1);
+        p.setColor(DashUi.WHITE_60);
+        canvas.drawRect(exitDialogRect, p);
+
+        drawCjk(canvas, "退出 PANELINK", left + ui, top + ui * 2, labelSize, DashUi.WHITE);
+        drawCjk(canvas, "确定退出系统面板？", left + ui, top + ui * 4, ui, DashUi.WHITE_60);
+
+        int btnH = ui * 2 + ui / 2;
+        int btnW = (dw - ui * 3) / 2;
+        int by = top + dh - btnH - ui / 2;
+        exitCancelRect.set(left + ui, by, left + ui + btnW, by + btnH);
+        exitOkRect.set(left + dw - ui - btnW, by, left + dw - ui, by + btnH);
+        drawDialogButton(canvas, exitCancelRect, "取消", DashUi.WHITE_30);
+        drawDialogButton(canvas, exitOkRect, "退出", DashUi.WHITE);
+    }
+
+    private void drawDialogButton(Canvas canvas, Rect rect, String text, int border) {
+        p.setStyle(Paint.Style.STROKE);
+        p.setStrokeWidth(1);
+        p.setColor(border);
+        canvas.drawRect(rect, p);
+        cjk.setTextSize(labelSize);
+        cjk.setColor(DashUi.WHITE);
+        cjk.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText(text, rect.centerX(), rect.centerY() + labelSize / 3, cjk);
+        cjk.setTextAlign(Paint.Align.LEFT);
+    }
+
+    public void cancelExitConfirm() {
+        confirmExit = false;
+        invalidate();
+    }
+
+    public boolean isExitConfirmVisible() {
+        return confirmExit;
     }
 
     private void layoutRow(int index, int left, int right, int y) {
@@ -240,7 +300,7 @@ public final class SettingsOverlayView extends View {
                 break;
             case ROW_CLOSE:
             default:
-                label = "关闭";
+                label = "退出";
                 value = "";
                 break;
         }
@@ -274,7 +334,7 @@ public final class SettingsOverlayView extends View {
             int bx = rowRects[index].right - bw;
             int by = rowRects[index].top + (rowH - (rowH - ui)) / 2;
             canvas.drawRect(bx, by, bx + bw, by + rowH - ui, p);
-            drawCjk(canvas, index == ROW_RESET ? "重置" : "关闭", bx + ui / 2,
+            drawCjk(canvas, index == ROW_RESET ? "重置" : "退出", bx + ui / 2,
                     baseline, labelSize, DashUi.WHITE);
         }
     }
@@ -307,6 +367,16 @@ public final class SettingsOverlayView extends View {
         }
         int x = (int) event.getX();
         int y = (int) event.getY();
+        if (confirmExit) {
+            if (exitOkRect.contains(x, y)) {
+                confirmExit = false;
+                listener.onExitRequested();
+            } else if (exitCancelRect.contains(x, y) || !exitDialogRect.contains(x, y)) {
+                confirmExit = false;
+            }
+            invalidate();
+            return true;
+        }
         if (hostEditRect.contains(x, y)) {
             if (listener != null) {
                 listener.onEditHostRequested();
@@ -345,9 +415,7 @@ public final class SettingsOverlayView extends View {
                     changed();
                     break;
                 case ROW_CLOSE:
-                    if (listener != null) {
-                        listener.onClosed();
-                    }
+                    confirmExit = true;
                     break;
                 default:
                     if (minusRects[i].contains(x, y)) {

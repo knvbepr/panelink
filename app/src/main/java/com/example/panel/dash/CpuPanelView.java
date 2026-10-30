@@ -97,11 +97,16 @@ public final class CpuPanelView extends PanelView {
             return;
         }
 
+        boolean compactLabels = chartBottom - chartTop < ui * 7;
         for (int i = 0; i <= 4; i++) {
             int y = chartBottom - (chartBottom - chartTop) * i / 4;
             canvas.drawLine(left, y, chartRight, y, grid);
+            if (compactLabels && i % 2 != 0) {
+                continue;
+            }
+            int labelBaseline = i == 0 ? y - 2 : y + ui + dp(2);
             drawDseg(canvas, String.format(Locale.US, "%03d", i * 25), left,
-                    y + ui / 2 + dp(2), ui, DashUi.WHITE_30);
+                    labelBaseline, ui, DashUi.WHITE_30);
         }
 
         float thresholdY = chartBottom - (chartBottom - chartTop) * (THRESHOLD / 100f);

@@ -82,7 +82,9 @@ public final class DiskPanelView extends PanelView {
             int baseline = y + ui;
             long pct = disk.totalBytes > 0 ? disk.usedBytes * 100 / disk.totalBytes : 0;
             drawMono(canvas, disk.name, left, baseline, ui, DashUi.WHITE);
-            drawDsegRight(canvas, DashUi.percent(pct), right, baseline, ui,
+            mono.setTextSize(infoSize);
+            int unitW = (int) mono.measureText("%");
+            drawDsegRight(canvas, DashUi.percent(pct), right - unitW - 2, baseline, ui,
                     pct >= 95 ? DashUi.RED : pct >= 85 ? DashUi.AMBER : DashUi.WHITE_60);
             drawMonoRight(canvas, "%", right, baseline, infoSize, DashUi.WHITE_60);
 
