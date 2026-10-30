@@ -47,6 +47,7 @@
 #pragma comment(lib, "advapi32.lib")
 #pragma comment(lib, "winhttp.lib")
 #pragma comment(lib, "shell32.lib")
+#pragma comment(lib, "user32.lib")
 
 #ifndef PROCESSOR_INFORMATION_CLASS
 #define PROCESSOR_INFORMATION_CLASS 11
