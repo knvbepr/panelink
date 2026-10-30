@@ -15,3 +15,6 @@
 local.properties
 /tools/
 /screenshots/
+/release-pc/
+/panelink-v*.apk
+/panelink-pc-windows*.zip
