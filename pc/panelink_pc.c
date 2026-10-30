@@ -493,6 +493,147 @@ static void wmi_query_temps(IWbemServices *services) {
     enumerator->lpVtbl->Release(enumerator);
 }
 
+static int wmi_get_long(IWbemClassObject *obj, const wchar_t *name, long *out) {
+    VARIANT var;
+    VariantInit(&var);
+    int ok = 0;
+    if (SUCCEEDED(obj->lpVtbl->Get(obj, name, 0, &var, NULL, NULL))) {
+        if (var.vt == VT_I4) { *out = var.lVal; ok = 1; }
+        else if (var.vt == VT_UI4) { *out = (long) var.ulVal; ok = 1; }
+        else if (var.vt == VT_I2) { *out = var.iVal; ok = 1; }
+        else if (var.vt == VT_UI2) { *out = var.uiVal; ok = 1; }
+    }
+    VariantClear(&var);
+    return ok;
+}
+
+static float wmi_get_float(IWbemClassObject *obj, const wchar_t *name, int *ok) {
+    VARIANT var;
+    VariantInit(&var);
+    float value = 0;
+    *ok = 0;
+    if (SUCCEEDED(obj->lpVtbl->Get(obj, name, 0, &var, NULL, NULL))) {
+        if (var.vt == VT_R4) { value = var.fltVal; *ok = 1; }
+        else if (var.vt == VT_R8) { value = (float) var.dblVal; *ok = 1; }
+        else if (var.vt == VT_I4) { value = (float) var.lVal; *ok = 1; }
+    }
+    VariantClear(&var);
+    return value;
+}
+
+static void wmi_get_text(IWbemClassObject *obj, const wchar_t *name, char *out, size_t cap) {
+    VARIANT var;
+    VariantInit(&var);
+    out[0] = 0;
+    if (SUCCEEDED(obj->lpVtbl->Get(obj, name, 0, &var, NULL, NULL))
+        && var.vt == VT_BSTR && var.bstrVal) {
+        WideCharToMultiByte(CP_UTF8, 0, var.bstrVal, -1, out, (int) cap, NULL, NULL);
+    }
+    VariantClear(&var);
+}
+
+static int sensor_name_exists(const char *name) {
+    for (int i = 0; i < g_temp_count; i++) {
+        if (strcmp(g_temps[i].name, name) == 0) return 1;
+    }
+    for (int i = 0; i < g_fan_count; i++) {
+        if (strcmp(g_fans[i].name, name) == 0) return 1;
+    }
+    return 0;
+}
+
+static void wmi_query_acpi_perf(IWbemServices *services) {
+    BSTR lang = SysAllocString(L"WQL");
+    BSTR query = SysAllocString(
+        L"SELECT Name,HighPrecisionTemperature,Temperature FROM "
+        L"Win32_PerfFormattedData_Counters_ThermalZoneInformation");
+    IEnumWbemClassObject *enumerator = NULL;
+    HRESULT hr = services->lpVtbl->ExecQuery(services, lang, query,
+                                             WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY,
+                                             NULL, &enumerator);
+    SysFreeString(lang);
+    SysFreeString(query);
+    if (FAILED(hr) || !enumerator) return;
+    IWbemClassObject *obj = NULL;
+    ULONG returned = 0;
+    while (g_temp_count < 8 &&
+           enumerator->lpVtbl->Next(enumerator, 500, 1, &obj, &returned) == S_OK &&
+           returned == 1) {
+        long high = 0;
+        long low = 0;
+        wmi_get_long(obj, L"HighPrecisionTemperature", &high);
+        wmi_get_long(obj, L"Temperature", &low);
+        double tenths = high > 0 ? (double) high : (double) low * 10.0;
+        float c = (float) (tenths / 10.0 - 273.15);
+        if (c > 20 && c < 110) {
+            char name[64] = "ACPI";
+            char raw[64];
+            wmi_get_text(obj, L"Name", raw, sizeof(raw));
+            if (raw[0]) {
+                char *p = raw;
+                while (*p == '\\' || *p == '_') p++;
+                snprintf(name, sizeof(name), "%.40s", p);
+            }
+            if (!sensor_name_exists(name)) {
+                TempInfo *t = &g_temps[g_temp_count++];
+                snprintf(t->name, sizeof(t->name), "%s", name);
+                t->celsius = c;
+            }
+        }
+        obj->lpVtbl->Release(obj);
+        obj = NULL;
+    }
+    enumerator->lpVtbl->Release(enumerator);
+}
+
+static void wmi_query_lhm_ns(IWbemLocator *locator, const wchar_t *ns) {
+    IWbemServices *services = NULL;
+    if (!wmi_connect(locator, ns, &services)) return;
+    BSTR lang = SysAllocString(L"WQL");
+    BSTR query = SysAllocString(L"SELECT Name,SensorType,Value FROM Sensor");
+    IEnumWbemClassObject *enumerator = NULL;
+    HRESULT hr = services->lpVtbl->ExecQuery(services, lang, query,
+                                             WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY,
+                                             NULL, &enumerator);
+    SysFreeString(lang);
+    SysFreeString(query);
+    if (SUCCEEDED(hr) && enumerator) {
+        IWbemClassObject *obj = NULL;
+        ULONG returned = 0;
+        while ((g_temp_count < 8 || g_fan_count < 8) &&
+               enumerator->lpVtbl->Next(enumerator, 500, 1, &obj, &returned) == S_OK &&
+               returned == 1) {
+            char name[64] = "";
+            char type[32] = "";
+            int ok = 0;
+            float value = wmi_get_float(obj, L"Value", &ok);
+            wmi_get_text(obj, L"Name", name, sizeof(name));
+            wmi_get_text(obj, L"SensorType", type, sizeof(type));
+            if (ok && name[0]) {
+                if (strcmp(type, "Temperature") == 0 && value > 20 && value < 110 &&
+                    g_temp_count < 8 && !sensor_name_exists(name)) {
+                    TempInfo *t = &g_temps[g_temp_count++];
+                    snprintf(t->name, sizeof(t->name), "%.40s", name);
+                    t->celsius = value;
+                } else if (strcmp(type, "Fan") == 0 && value > 0 && g_fan_count < 8) {
+                    char fanName[64];
+                    snprintf(fanName, sizeof(fanName), "%.40s", name);
+                    if (!sensor_name_exists(fanName)) {
+                        FanInfo *f = &g_fans[g_fan_count++];
+                        snprintf(f->name, sizeof(f->name), "%s", fanName);
+                        f->value = (int) value;
+                        f->percent = 0;
+                    }
+                }
+            }
+            obj->lpVtbl->Release(obj);
+            obj = NULL;
+        }
+        enumerator->lpVtbl->Release(enumerator);
+    }
+    services->lpVtbl->Release(services);
+}
+
 static void wmi_query_fans(IWbemServices *services) {
     BSTR lang = SysAllocString(L"WQL");
     BSTR query = SysAllocString(L"SELECT * FROM Win32_Fan");
@@ -550,9 +691,12 @@ static void sample_wmi(void) {
         }
         wmi = NULL;
         if (wmi_connect(locator, L"ROOT\\CIMV2", &wmi)) {
+            wmi_query_acpi_perf(wmi);
             wmi_query_fans(wmi);
             wmi->lpVtbl->Release(wmi);
         }
+        wmi_query_lhm_ns(locator, L"ROOT\\LibreHardwareMonitor");
+        wmi_query_lhm_ns(locator, L"ROOT\\OpenHardwareMonitor");
         locator->lpVtbl->Release(locator);
     }
     if (did_init) CoUninitialize();
