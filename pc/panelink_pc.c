@@ -697,8 +697,6 @@ static void sample_wmi(void) {
             wmi_query_fans(wmi);
             wmi->lpVtbl->Release(wmi);
         }
-        wmi_query_lhm_ns(locator, L"ROOT\\LibreHardwareMonitor");
-        wmi_query_lhm_ns(locator, L"ROOT\\OpenHardwareMonitor");
         locator->lpVtbl->Release(locator);
     }
     if (did_init) CoUninitialize();
