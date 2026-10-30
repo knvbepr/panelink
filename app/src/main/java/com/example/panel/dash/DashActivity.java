@@ -334,6 +334,10 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
         }
         if (keyCode == KeyEvent.KEYCODE_BACK
                 && settingsOverlay.getVisibility() == View.VISIBLE) {
+            if (settingsOverlay.isAboutVisible()) {
+                settingsOverlay.cancelAbout();
+                return true;
+            }
             if (settingsOverlay.isNumericEditVisible()) {
                 settingsOverlay.cancelNumericEdit();
                 return true;

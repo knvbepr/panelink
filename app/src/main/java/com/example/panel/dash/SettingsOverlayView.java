@@ -13,6 +13,8 @@ import java.util.Locale;
 /** Two-column settings sheet with wide rows and large +/- targets. */
 public final class SettingsOverlayView extends View {
 
+    private static final String VERSION = "1.5.0";
+
     public interface Listener {
         void onSettingsChanged();
 
@@ -51,6 +53,9 @@ public final class SettingsOverlayView extends View {
     private final Rect[] minusRects = new Rect[ROWS];
     private final Rect[] plusRects = new Rect[ROWS];
     private final Rect backRect = new Rect();
+    private final Rect aboutRect = new Rect();
+    private final Rect aboutDialogRect = new Rect();
+    private final Rect aboutCloseRect = new Rect();
     private final Rect hostEditRect = new Rect();
     private final Rect exitDialogRect = new Rect();
     private final Rect exitCancelRect = new Rect();
@@ -61,6 +66,7 @@ public final class SettingsOverlayView extends View {
     private final Rect editCancelRect = new Rect();
     private final Rect editOkRect = new Rect();
     private boolean confirmExit;
+    private boolean aboutVisible;
     private int editingRow = -1;
     private final StringBuilder editText = new StringBuilder();
     private boolean editFresh;
@@ -169,16 +175,68 @@ public final class SettingsOverlayView extends View {
 
         int backW = Math.min(w / 4, ui * 9);
         backRect.set(ui, h - ui * 3, ui + backW, h - ui / 2);
+        aboutRect.set(backRect.right + ui, backRect.top, backRect.right + ui + backW,
+                backRect.bottom);
         p.setStyle(Paint.Style.STROKE);
         p.setColor(DashUi.WHITE_50);
         canvas.drawRect(backRect, p);
+        canvas.drawRect(aboutRect, p);
         drawCjk(canvas, "返回", backRect.left + ui / 2,
                 backRect.centerY() + labelSize / 3, labelSize, DashUi.WHITE);
-        if (editingRow >= 0) {
+        drawCjk(canvas, "关于", aboutRect.left + ui / 2,
+                aboutRect.centerY() + labelSize / 3, labelSize, DashUi.WHITE);
+        if (aboutVisible) {
+            drawAbout(canvas, w, h);
+        } else if (editingRow >= 0) {
             drawNumericEditor(canvas, w, h);
         } else if (confirmExit) {
             drawExitConfirm(canvas, w, h);
         }
+    }
+
+    private void drawAbout(Canvas canvas, int w, int h) {
+        p.setStyle(Paint.Style.FILL);
+        p.setColor(0xB0000000);
+        canvas.drawRect(0, 0, w, h, p);
+
+        int dw = Math.min(w * 4 / 5, ui * 52);
+        int dh = Math.min(h * 4 / 5, ui * 24);
+        int left = (w - dw) / 2;
+        int top = (h - dh) / 2;
+        aboutDialogRect.set(left, top, left + dw, top + dh);
+        p.setColor(DashUi.BLACK);
+        canvas.drawRect(aboutDialogRect, p);
+        p.setStyle(Paint.Style.STROKE);
+        p.setStrokeWidth(1);
+        p.setColor(DashUi.WHITE_60);
+        canvas.drawRect(aboutDialogRect, p);
+
+        drawCjk(canvas, "关于 PANELINK", left + ui, top + ui * 2, labelSize, DashUi.WHITE);
+        drawMono(canvas, "v" + VERSION, left + ui, top + ui * 4,
+                ui, DashUi.WHITE_60);
+        drawCjk(canvas, "作者  knvbepr", left + ui, top + ui * 6, ui, DashUi.WHITE_60);
+        drawCjk(canvas, "开源组件", left + ui, top + ui * 8, ui, DashUi.WHITE);
+
+        String[] licenses = {
+                "AndroidX / AppCompat      Apache-2.0",
+                "DSEG7 Classic             SIL OFL 1.1",
+                "JetBrains Mono            SIL OFL 1.1",
+                "WenQuanYi Bitmap Song     GPL-2.0 + font exception",
+                "LibreHardwareMonitor      MPL-2.0",
+        };
+        int y = top + ui * 10;
+        for (String line : licenses) {
+            drawMono(canvas, line, left + ui, y, ui / 2 + ui / 3, DashUi.WHITE_60);
+            y += ui + ui / 2;
+        }
+        drawMono(canvas, "Source: github.com/knvbepr/panelink", left + ui, y,
+                ui / 2 + ui / 3, DashUi.WHITE_30);
+
+        int btnW = Math.min(dw / 3, ui * 8);
+        int btnH = ui * 2 + ui / 2;
+        aboutCloseRect.set(left + dw - ui - btnW, top + dh - ui / 2 - btnH,
+                left + dw - ui, top + dh - ui / 2);
+        drawDialogButton(canvas, aboutCloseRect, "关闭", DashUi.WHITE);
     }
 
     private void drawExitConfirm(Canvas canvas, int w, int h) {
@@ -433,6 +491,16 @@ public final class SettingsOverlayView extends View {
     public void cancelEditors() {
         confirmExit = false;
         editingRow = -1;
+        aboutVisible = false;
+        invalidate();
+    }
+
+    public boolean isAboutVisible() {
+        return aboutVisible;
+    }
+
+    public void cancelAbout() {
+        aboutVisible = false;
         invalidate();
     }
 
@@ -588,6 +656,13 @@ public final class SettingsOverlayView extends View {
         }
         int x = (int) event.getX();
         int y = (int) event.getY();
+        if (aboutVisible) {
+            if (aboutCloseRect.contains(x, y) || !aboutDialogRect.contains(x, y)) {
+                aboutVisible = false;
+            }
+            invalidate();
+            return true;
+        }
         if (editingRow >= 0) {
             handleNumericTouch(x, y);
             return true;
@@ -599,6 +674,11 @@ public final class SettingsOverlayView extends View {
             } else if (exitCancelRect.contains(x, y) || !exitDialogRect.contains(x, y)) {
                 confirmExit = false;
             }
+            invalidate();
+            return true;
+        }
+        if (aboutRect.contains(x, y)) {
+            aboutVisible = true;
             invalidate();
             return true;
         }
@@ -696,6 +776,13 @@ public final class SettingsOverlayView extends View {
         if (listener != null) {
             listener.onSettingsChanged();
         }
+    }
+
+    private void drawMono(Canvas canvas, String text, int x, int baseline, int size, int color) {
+        mono.setTextSize(size);
+        mono.setColor(color);
+        mono.setTextAlign(Paint.Align.LEFT);
+        canvas.drawText(text, x, baseline, mono);
     }
 
     private void drawDsegRight(Canvas canvas, String text, int right, int baseline, int size,

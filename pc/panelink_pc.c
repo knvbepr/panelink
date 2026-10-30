@@ -1071,6 +1071,7 @@ static void serve_client(SOCKET client) {
 
 /* --------------------------------------------------------------- tray UI */
 
+#define PANELINK_VERSION "1.5.0"
 #define WM_TRAY_ICON (WM_APP + 1)
 #define IDM_CPU 1001
 #define IDM_MEM 1002
@@ -1228,7 +1229,7 @@ static DWORD WINAPI tray_thread(LPVOID unused) {
     nid.uCallbackMessage = WM_TRAY_ICON;
     nid.hIcon = g_tray_icon;
     char tip[128];
-    snprintf(tip, sizeof(tip), "PANELINK  %s  :%d", g_name, g_port);
+    snprintf(tip, sizeof(tip), "PANELINK  %s  :%d  v1.5.0", g_name, g_port);
     MultiByteToWideChar(CP_UTF8, 0, tip, -1, nid.szTip, 128);
     Shell_NotifyIconW(NIM_ADD, &nid);
 
