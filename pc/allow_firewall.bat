@@ -6,7 +6,7 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-netsh advfirewall firewall add rule name="PANELINK TCP 47823" dir=in action=allow protocol=TCP localport=47823
-netsh advfirewall firewall add rule name="PANELINK UDP 47823" dir=in action=allow protocol=UDP localport=47823
+netsh advfirewall firewall add rule name="PANELINK TCP 51737" dir=in action=allow protocol=TCP localport=51737
+netsh advfirewall firewall add rule name="PANELINK UDP 51737" dir=in action=allow protocol=UDP localport=51737
 echo PANELINK firewall rules added.
 pause

@@ -39,7 +39,7 @@ public final class RemoteClient {
 
     private volatile boolean running;
     private volatile String host = "";
-    private volatile int port = 47823;
+    private volatile int port = 51737;
     private volatile boolean discovery = true;
     private volatile Socket socket;
     private Thread worker;
@@ -54,7 +54,7 @@ public final class RemoteClient {
     public synchronized void start(String host, int port, boolean discovery, Listener listener) {
         stop();
         this.host = host == null ? "" : host;
-        this.port = port <= 0 ? 47823 : port;
+        this.port = port <= 0 ? 51737 : port;
         this.discovery = discovery;
         this.listener = listener;
         running = true;

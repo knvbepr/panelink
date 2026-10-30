@@ -42,7 +42,7 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
 
     private boolean lastRemoteMode;
     private String lastRemoteHost = "";
-    private int lastRemotePort = 47823;
+    private int lastRemotePort = 51737;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

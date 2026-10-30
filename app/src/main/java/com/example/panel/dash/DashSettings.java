@@ -29,7 +29,7 @@ public final class DashSettings {
     public float tempFaultC = 75f;
     public boolean remoteMode = false;
     public String remoteHost = "";
-    public int remotePort = 47823;
+    public int remotePort = 51737;
 
     public void load(Context context) {
         SharedPreferences p = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
@@ -43,7 +43,7 @@ public final class DashSettings {
         tempFaultC = clamp(p.getFloat(K_TEMP_FAULT, 75f), 40f, 120f);
         remoteMode = p.getBoolean(K_REMOTE_MODE, false);
         remoteHost = p.getString(K_REMOTE_HOST, "");
-        remotePort = clamp(p.getInt(K_REMOTE_PORT, 47823), 1024, 65535);
+        remotePort = clamp(p.getInt(K_REMOTE_PORT, 51737), 1024, 65535);
     }
 
     public void save(Context context) {
@@ -73,7 +73,7 @@ public final class DashSettings {
         tempFaultC = 75f;
         remoteMode = false;
         remoteHost = "";
-        remotePort = 47823;
+        remotePort = 51737;
     }
 
     private static int clamp(int v, int lo, int hi) {

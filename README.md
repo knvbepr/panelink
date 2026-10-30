@@ -18,8 +18,8 @@ service for a Windows PC.
 
 ## Remote protocol
 
-- UDP 47823: `PANELINK_DISCOVER` -> `{"type":"offer","name":"...","port":47823}`
-- TCP 47823: newline-delimited JSON state frames (PC -> phone)
+- UDP 51737: `PANELINK_DISCOVER` -> `{"type":"offer","name":"...","port":51737}`
+- TCP 51737: newline-delimited JSON state frames (PC -> phone)
 - Data-only: the PC never parses or executes phone input; no command channel, no scripts.
 
 The PC service is in [`pc/`](pc/). It is compiled with MSVC by GitHub Actions
@@ -46,6 +46,6 @@ See [`docs/`](docs/) and the latest screenshots in the repository history.
   and charging current may be unavailable.
 - ACPI thermal zones / some fans need the PC service to run elevated; fan counters are
   absent on many laptops. GPU fan is read through NVML when the driver exposes it.
-- Windows Firewall must allow inbound UDP/TCP 47823 on the private LAN. Run
+- Windows Firewall must allow inbound UDP/TCP 51737 on the private LAN. Run
   `pc/allow_firewall.bat` as administrator.
 - 5G requires API 30+ and a 5G-capable device; API 22 has no NR network type.

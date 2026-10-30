@@ -2,8 +2,8 @@
  * PANELINK PC telemetry service.
  *
  * Data-only protocol:
- *   UDP 47823 : "PANELINK_DISCOVER" -> {"type":"offer","name":...,"port":...}
- *   TCP 47823 : newline-delimited JSON state frames (PC -> phone)
+ *   UDP 51737 : "PANELINK_DISCOVER" -> {"type":"offer","name":...,"port":...}
+ *   TCP 51737 : newline-delimited JSON state frames (PC -> phone)
  *
  * The service never parses or executes anything received from the network. It only
  * answers discovery and streams its own metrics, so the protocol is data-only.
@@ -34,6 +34,7 @@
 #include <time.h>
 #include <math.h>
 #include <winhttp.h>
+#include <shellapi.h>
 
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "pdh.lib")
@@ -45,6 +46,7 @@
 #pragma comment(lib, "powrprof.lib")
 #pragma comment(lib, "advapi32.lib")
 #pragma comment(lib, "winhttp.lib")
+#pragma comment(lib, "shell32.lib")
 
 #ifndef PROCESSOR_INFORMATION_CLASS
 #define PROCESSOR_INFORMATION_CLASS 11
@@ -114,7 +116,7 @@ typedef struct {
     float celsius;
 } TempInfo;
 
-static int g_port = 47823;
+static int g_port = 51737;
 static int g_interval_ms = 1000;
 static int g_send_cpu = 1, g_send_mem = 1, g_send_gpu = 1, g_send_disk = 1;
 static int g_send_battery = 1, g_send_fans = 1, g_send_temps = 1;
@@ -189,7 +191,7 @@ static void read_config(void) {
     GetModuleFileNameA(NULL, path, MAX_PATH);
     char *slash = strrchr(path, '\\');
     if (slash) strcpy(slash + 1, "panelink.ini");
-    g_port = GetPrivateProfileIntA("panelink", "port", 47823, path);
+    g_port = GetPrivateProfileIntA("panelink", "port", 51737, path);
     g_interval_ms = GetPrivateProfileIntA("panelink", "interval_ms", 1000, path);
     if (g_interval_ms < 100) g_interval_ms = 100;
     if (g_interval_ms > 5000) g_interval_ms = 5000;
@@ -571,14 +573,8 @@ static void wmi_query_acpi_perf(IWbemServices *services) {
         double tenths = high > 0 ? (double) high : (double) low * 10.0;
         float c = (float) (tenths / 10.0 - 273.15);
         if (c > 20 && c < 110) {
-            char name[64] = "ACPI";
-            char raw[64];
-            wmi_get_text(obj, L"Name", raw, sizeof(raw));
-            if (raw[0]) {
-                char *p = raw;
-                while (*p == '\\' || *p == '_') p++;
-                snprintf(name, sizeof(name), "%.40s", p);
-            }
+            char name[64];
+            snprintf(name, sizeof(name), "ACPI%d", g_temp_count + 1);
             if (!sensor_name_exists(name)) {
                 TempInfo *t = &g_temps[g_temp_count++];
                 snprintf(t->name, sizeof(t->name), "%s", name);
@@ -1072,8 +1068,180 @@ static void serve_client(SOCKET client) {
     closesocket(client);
 }
 
+/* --------------------------------------------------------------- tray UI */
+
+#define WM_TRAY_ICON (WM_APP + 1)
+#define IDM_CPU 1001
+#define IDM_MEM 1002
+#define IDM_GPU 1003
+#define IDM_DISK 1004
+#define IDM_BATT 1005
+#define IDM_FANS 1006
+#define IDM_TEMPS 1007
+#define IDM_INT_500 1101
+#define IDM_INT_1000 1102
+#define IDM_INT_2000 1103
+#define IDM_INT_5000 1104
+#define IDM_CONFIG 1201
+#define IDM_ABOUT 1202
+
+static HWND g_tray_hwnd;
+static HINSTANCE g_instance;
+static HICON g_tray_icon;
+
+static void config_path(char *path, size_t cap) {
+    GetModuleFileNameA(NULL, path, (DWORD) cap);
+    char *slash = strrchr(path, '\\');
+    if (slash) strcpy(slash + 1, "panelink.ini");
+}
+
+static void save_send_flags(void) {
+    char path[MAX_PATH];
+    config_path(path, sizeof(path));
+    WritePrivateProfileStringA("panelink", "send_cpu", g_send_cpu ? "1" : "0", path);
+    WritePrivateProfileStringA("panelink", "send_mem", g_send_mem ? "1" : "0", path);
+    WritePrivateProfileStringA("panelink", "send_gpu", g_send_gpu ? "1" : "0", path);
+    WritePrivateProfileStringA("panelink", "send_disk", g_send_disk ? "1" : "0", path);
+    WritePrivateProfileStringA("panelink", "send_battery", g_send_battery ? "1" : "0", path);
+    WritePrivateProfileStringA("panelink", "send_fans", g_send_fans ? "1" : "0", path);
+    WritePrivateProfileStringA("panelink", "send_temps", g_send_temps ? "1" : "0", path);
+    char value[16];
+    snprintf(value, sizeof(value), "%d", g_interval_ms);
+    WritePrivateProfileStringA("panelink", "interval_ms", value, path);
+}
+
+static void tray_command(int id) {
+    switch (id) {
+        case IDM_CPU: g_send_cpu = !g_send_cpu; save_send_flags(); break;
+        case IDM_MEM: g_send_mem = !g_send_mem; save_send_flags(); break;
+        case IDM_GPU: g_send_gpu = !g_send_gpu; save_send_flags(); break;
+        case IDM_DISK: g_send_disk = !g_send_disk; save_send_flags(); break;
+        case IDM_BATT: g_send_battery = !g_send_battery; save_send_flags(); break;
+        case IDM_FANS: g_send_fans = !g_send_fans; save_send_flags(); break;
+        case IDM_TEMPS: g_send_temps = !g_send_temps; save_send_flags(); break;
+        case IDM_INT_500: g_interval_ms = 500; save_send_flags(); break;
+        case IDM_INT_1000: g_interval_ms = 1000; save_send_flags(); break;
+        case IDM_INT_2000: g_interval_ms = 2000; save_send_flags(); break;
+        case IDM_INT_5000: g_interval_ms = 5000; save_send_flags(); break;
+        case IDM_CONFIG: {
+            char path[MAX_PATH];
+            config_path(path, sizeof(path));
+            ShellExecuteA(NULL, "open", path, NULL, NULL, SW_SHOWNORMAL);
+            break;
+        }
+        case IDM_ABOUT:
+            MessageBoxW(NULL,
+                        L"PANELINK PC service\\n\\nData-only JSON telemetry.\\n"
+                        L"LibreHardwareMonitor web server is read at 127.0.0.1:8085.",
+                        L"PANELINK", MB_OK | MB_ICONINFORMATION);
+            break;
+        default:
+            break;
+    }
+}
+
+static UINT menu_flag(int value) {
+    return MF_STRING | (value ? MF_CHECKED : MF_UNCHECKED);
+}
+
+static void show_tray_menu(HWND hwnd) {
+    HMENU menu = CreatePopupMenu();
+    if (!menu) return;
+    AppendMenuW(menu, menu_flag(g_send_cpu), IDM_CPU, L"CPU");
+    AppendMenuW(menu, menu_flag(g_send_mem), IDM_MEM, L"内存");
+    AppendMenuW(menu, menu_flag(g_send_gpu), IDM_GPU, L"显卡");
+    AppendMenuW(menu, menu_flag(g_send_disk), IDM_DISK, L"磁盘 I/O");
+    AppendMenuW(menu, menu_flag(g_send_battery), IDM_BATT, L"电池");
+    AppendMenuW(menu, menu_flag(g_send_fans), IDM_FANS, L"风扇");
+    AppendMenuW(menu, menu_flag(g_send_temps), IDM_TEMPS, L"温度");
+    AppendMenuW(menu, MF_SEPARATOR, 0, NULL);
+
+    HMENU interval = CreatePopupMenu();
+    AppendMenuW(interval, MF_STRING | (g_interval_ms == 500 ? MF_CHECKED : 0),
+                IDM_INT_500, L"0.5 秒");
+    AppendMenuW(interval, MF_STRING | (g_interval_ms == 1000 ? MF_CHECKED : 0),
+                IDM_INT_1000, L"1.0 秒");
+    AppendMenuW(interval, MF_STRING | (g_interval_ms == 2000 ? MF_CHECKED : 0),
+                IDM_INT_2000, L"2.0 秒");
+    AppendMenuW(interval, MF_STRING | (g_interval_ms == 5000 ? MF_CHECKED : 0),
+                IDM_INT_5000, L"5.0 秒");
+    AppendMenuW(menu, MF_POPUP, (UINT_PTR) interval, L"刷新间隔");
+
+    char portLabel[64];
+    snprintf(portLabel, sizeof(portLabel), "端口 %d（在 INI 修改）", g_port);
+    AppendMenuW(menu, MF_STRING | MF_GRAYED, 0, L" ");
+    AppendMenuW(menu, MF_SEPARATOR, 0, NULL);
+    AppendMenuA(menu, MF_STRING | MF_GRAYED, 0, portLabel);
+    AppendMenuW(menu, MF_STRING, IDM_CONFIG, L"打开配置文件");
+    AppendMenuW(menu, MF_STRING, IDM_ABOUT, L"关于 PANELINK");
+
+    POINT pt;
+    GetCursorPos(&pt);
+    SetForegroundWindow(hwnd);
+    int id = TrackPopupMenu(menu, TPM_RETURNCMD | TPM_RIGHTBUTTON | TPM_NONOTIFY,
+                            pt.x, pt.y, 0, hwnd, NULL);
+    DestroyMenu(menu);
+    if (id) tray_command(id);
+    PostMessage(hwnd, WM_NULL, 0, 0);
+}
+
+static LRESULT CALLBACK tray_wndproc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
+    switch (msg) {
+        case WM_TRAY_ICON:
+            if (LOWORD(lp) == WM_LBUTTONUP || LOWORD(lp) == WM_RBUTTONUP ||
+                LOWORD(lp) == WM_LBUTTONDBLCLK) {
+                show_tray_menu(hwnd);
+            }
+            return 0;
+        case WM_DESTROY:
+            if (g_tray_icon) {
+                NOTIFYICONDATAW nid = {0};
+                nid.cbSize = sizeof(nid);
+                nid.hWnd = hwnd;
+                nid.uID = 1;
+                Shell_NotifyIconW(NIM_DELETE, &nid);
+            }
+            PostQuitMessage(0);
+            return 0;
+        default:
+            return DefWindowProcW(hwnd, msg, wp, lp);
+    }
+}
+
+static DWORD WINAPI tray_thread(LPVOID unused) {
+    WNDCLASSW wc = {0};
+    wc.lpfnWndProc = tray_wndproc;
+    wc.hInstance = g_instance;
+    wc.lpszClassName = L"PANELINK_TRAY";
+    RegisterClassW(&wc);
+    g_tray_hwnd = CreateWindowExW(0, L"PANELINK_TRAY", L"PANELINK", 0, 0, 0, 0, 0,
+                                  HWND_MESSAGE, NULL, g_instance, NULL);
+    if (!g_tray_hwnd) return 1;
+    g_tray_icon = LoadIconW(NULL, IDI_APPLICATION);
+
+    NOTIFYICONDATAW nid = {0};
+    nid.cbSize = sizeof(nid);
+    nid.hWnd = g_tray_hwnd;
+    nid.uID = 1;
+    nid.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP;
+    nid.uCallbackMessage = WM_TRAY_ICON;
+    nid.hIcon = g_tray_icon;
+    char tip[128];
+    snprintf(tip, sizeof(tip), "PANELINK  %s  :%d", g_name, g_port);
+    MultiByteToWideChar(CP_UTF8, 0, tip, -1, nid.szTip, 128);
+    Shell_NotifyIconW(NIM_ADD, &nid);
+
+    MSG msg;
+    while (GetMessageW(&msg, NULL, 0, 0) > 0) {
+        TranslateMessage(&msg);
+        DispatchMessageW(&msg);
+    }
+    return 0;
+}
+
 int main(void) {
     SetConsoleOutputCP(CP_UTF8);
+    g_instance = GetModuleHandleA(NULL);
     read_config();
     WSADATA wsa;
     if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
@@ -1087,8 +1255,13 @@ int main(void) {
 
     printf("PANELINK PC service  name=%s port=%d interval=%dms\n", g_name, g_port, g_interval_ms);
     printf("Discovery: UDP %d  State: TCP %d  (data-only JSON)\n", g_port, g_port);
+    printf("Tray icon enabled. Right-click the icon to select sent metrics.\n");
+    fflush(stdout);
 
     CreateThread(NULL, 0, discovery_thread, NULL, 0, NULL);
+    CreateThread(NULL, 0, tray_thread, NULL, 0, NULL);
+    HWND console = GetConsoleWindow();
+    if (console) ShowWindow(console, SW_HIDE);
     SOCKET server = listen_socket();
     if (server == INVALID_SOCKET) {
         fprintf(stderr, "Cannot listen on port %d\n", g_port);
