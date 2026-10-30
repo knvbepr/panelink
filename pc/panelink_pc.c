@@ -1216,7 +1216,7 @@ static DWORD WINAPI tray_thread(LPVOID unused) {
     wc.lpszClassName = L"PANELINK_TRAY";
     RegisterClassW(&wc);
     g_tray_hwnd = CreateWindowExW(0, L"PANELINK_TRAY", L"PANELINK", 0, 0, 0, 0, 0,
-                                  HWND_MESSAGE, NULL, g_instance, NULL);
+                                  NULL, NULL, g_instance, NULL);
     if (!g_tray_hwnd) return 1;
     g_tray_icon = LoadIconW(NULL, IDI_APPLICATION);
 
