@@ -49,3 +49,7 @@ See [`docs/`](docs/) and the latest screenshots in the repository history.
 - Windows Firewall must allow inbound UDP/TCP 51737 on the private LAN. Run
   `pc/allow_firewall.bat` as administrator.
 - 5G requires API 30+ and a 5G-capable device; API 22 has no NR network type.
+
+## License
+
+PANELINK original code is Apache-2.0. Third-party components and full licence texts are in `THIRD_PARTY_NOTICES.md` and `LICENSES/`.
