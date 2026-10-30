@@ -1,15 +1,18 @@
 package com.example.panel.dash;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -121,7 +124,7 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
         }
         remoteStatus = settings.remoteHost.isEmpty() ? "搜索电脑..." : "连接电脑...";
         settingsOverlay.setRemoteStatus(remoteStatus);
-        remoteClient = new RemoteClient();
+        remoteClient = new RemoteClient(this);
         remoteClient.start(settings.remoteHost, settings.remotePort, true,
                 new RemoteClient.Listener() {
                     @Override
@@ -358,6 +361,42 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
     @Override
     public void onClosed() {
         settingsOverlay.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onEditHostRequested() {
+        EditText input = new EditText(this);
+        input.setText(settings.remoteHost);
+        input.setHint("192.168.1.3");
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setTextColor(Color.WHITE);
+        input.setHintTextColor(DashUi.WHITE_30);
+        input.setBackgroundColor(Color.BLACK);
+        input.setPadding(24, 16, 24, 16);
+        new AlertDialog.Builder(this)
+                .setTitle("远程主机")
+                .setView(input)
+                .setPositiveButton("连接", (dialog, which) -> {
+                    settings.remoteHost = input.getText().toString().trim();
+                    settings.remoteMode = true;
+                    settings.save(this);
+                    lastRemoteMode = true;
+                    lastRemoteHost = settings.remoteHost;
+                    lastRemotePort = settings.remotePort;
+                    startRemote();
+                    publish();
+                })
+                .setNeutralButton("自动发现", (dialog, which) -> {
+                    settings.remoteHost = "";
+                    settings.remoteMode = true;
+                    settings.save(this);
+                    lastRemoteMode = true;
+                    lastRemoteHost = "";
+                    startRemote();
+                    publish();
+                })
+                .setNegativeButton("取消", null)
+                .show();
     }
 
     @Override

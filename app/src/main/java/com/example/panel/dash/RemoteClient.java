@@ -1,5 +1,8 @@
 package com.example.panel.dash;
 
+import android.content.Context;
+import android.net.wifi.WifiManager;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -41,6 +44,12 @@ public final class RemoteClient {
     private volatile Socket socket;
     private Thread worker;
     private Listener listener;
+    private final Context context;
+    private WifiManager.MulticastLock multicastLock;
+
+    public RemoteClient(Context context) {
+        this.context = context.getApplicationContext();
+    }
 
     public synchronized void start(String host, int port, boolean discovery, Listener listener) {
         stop();
@@ -49,6 +58,18 @@ public final class RemoteClient {
         this.discovery = discovery;
         this.listener = listener;
         running = true;
+        if (multicastLock == null) {
+            try {
+                WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                if (wifi != null) {
+                    multicastLock = wifi.createMulticastLock("panelink-discovery");
+                    multicastLock.setReferenceCounted(false);
+                    multicastLock.acquire();
+                }
+            } catch (Exception ignored) {
+                // discovery can still use unicast broadcast without the lock
+            }
+        }
         worker = new Thread(this::loop, "remote-client");
         worker.setDaemon(true);
         worker.start();
@@ -60,6 +81,14 @@ public final class RemoteClient {
         if (worker != null) {
             worker.interrupt();
             worker = null;
+        }
+        if (multicastLock != null) {
+            try {
+                if (multicastLock.isHeld()) multicastLock.release();
+            } catch (Exception ignored) {
+                // ignore
+            }
+            multicastLock = null;
         }
     }
 

@@ -103,7 +103,7 @@ public final class TempPanelView extends PanelView {
 
     private void drawTemp(Canvas canvas, PanelData.Temp temp, int color) {
         int x = (int) rect.left + ui / 2;
-        int valueSize = ui + ui / 2;
+        int valueSize = ui + ui / 4;
         int baseline = (int) rect.centerY() + valueSize / 2;
         drawCjk(canvas, temp.name, x, baseline, ui, color);
         String value = String.valueOf((int) Math.round(temp.celsius));

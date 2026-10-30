@@ -19,6 +19,8 @@ public final class SettingsOverlayView extends View {
         void onClosed();
 
         void onDiscoverRequested();
+
+        void onEditHostRequested();
     }
 
     private static final int ROW_REMOTE = 0;
@@ -46,6 +48,7 @@ public final class SettingsOverlayView extends View {
     private final Rect[] minusRects = new Rect[ROWS];
     private final Rect[] plusRects = new Rect[ROWS];
     private final Rect backRect = new Rect();
+    private final Rect hostEditRect = new Rect();
 
     private int rowH;
     private int labelSize;
@@ -161,6 +164,11 @@ public final class SettingsOverlayView extends View {
         plusRects[index].set(right - btn, y + (rowH - btn) / 2, right, y + (rowH + btn) / 2);
         minusRects[index].set(right - btn * 2 - ui / 2, y + (rowH - btn) / 2,
                 right - btn - ui / 2, y + (rowH + btn) / 2);
+        if (index == ROW_HOST) {
+            int hb = Math.min(ui * 4, right - left);
+            hostEditRect.set(right - hb, y + (rowH - btn) / 2, right,
+                    y + (rowH + btn) / 2);
+        }
     }
 
     private void drawRow(Canvas canvas, int index, int left, int y) {
@@ -247,8 +255,9 @@ public final class SettingsOverlayView extends View {
                 color = settings.fullscreen ? DashUi.GREEN : DashUi.WHITE_60;
             }
             if (index == ROW_HOST) {
-                drawMonoRight(canvas, value, rowRects[index].right, baseline, valueSize,
+                drawMonoRight(canvas, value, hostEditRect.left - ui / 2, baseline, valueSize,
                         DashUi.WHITE_60);
+                drawTextButton(canvas, hostEditRect, "编辑", valueSize);
             } else {
                 drawCjkRight(canvas, value, rowRects[index].right, baseline, labelSize, color);
             }
@@ -262,6 +271,15 @@ public final class SettingsOverlayView extends View {
             drawCjk(canvas, index == ROW_RESET ? "重置" : "关闭", bx + ui / 2,
                     baseline, labelSize, DashUi.WHITE);
         }
+    }
+
+    private void drawTextButton(Canvas canvas, Rect rect, String text, int textSize) {
+        p.setStyle(Paint.Style.STROKE);
+        p.setStrokeWidth(1);
+        p.setColor(DashUi.WHITE_50);
+        canvas.drawRect(rect, p);
+        drawCjk(canvas, text, rect.left + ui / 2, rect.centerY() + textSize / 3,
+                textSize, DashUi.WHITE);
     }
 
     private void drawButton(Canvas canvas, Rect rect, String text) {
@@ -283,6 +301,12 @@ public final class SettingsOverlayView extends View {
         }
         int x = (int) event.getX();
         int y = (int) event.getY();
+        if (hostEditRect.contains(x, y)) {
+            if (listener != null) {
+                listener.onEditHostRequested();
+            }
+            return true;
+        }
         if (backRect.contains(x, y)) {
             if (listener != null) {
                 listener.onClosed();

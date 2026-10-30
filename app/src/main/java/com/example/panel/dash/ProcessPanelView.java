@@ -190,6 +190,9 @@ public final class ProcessPanelView extends PanelView {
         }
         int x = left;
         int count = 0;
+        if (data.fans.isEmpty()) {
+            drawCjk(canvas, "无风扇读数", left, baseline, ui, DashUi.WHITE_30);
+        }
         for (PanelData.RemoteFan fan : data.fans) {
             if (count >= 3) {
                 break;
@@ -201,7 +204,7 @@ public final class ProcessPanelView extends PanelView {
                     baseline + count * (ui + ui / 2), ui / 2, DashUi.WHITE_30);
             count++;
         }
-        int y = baseline + count * (ui + ui / 2) + ui / 2;
+        int y = baseline + Math.max(1, count) * (ui + ui / 2) + ui / 2;
         if (data.pcBatteryPresent) {
             drawCjk(canvas, "电池", left, y, ui, DashUi.WHITE_60);
             drawDseg(canvas, String.format(Locale.US, "%03d", data.pcBatteryPct), left + ui * 3,
