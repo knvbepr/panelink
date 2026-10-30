@@ -161,7 +161,7 @@ public final class SettingsOverlayView extends View {
 
     private void layoutRow(int index, int left, int right, int y) {
         rowRects[index].set(left, y, right, y + rowH);
-        int btn = Math.min(rowH - 4, ui * 2 + ui / 2);
+        int btn = Math.min(rowH - 4, ui * 3);
         plusRects[index].set(right - btn, y + (rowH - btn) / 2, right, y + (rowH + btn) / 2);
         minusRects[index].set(right - btn * 2 - ui / 2, y + (rowH - btn) / 2,
                 right - btn - ui / 2, y + (rowH + btn) / 2);

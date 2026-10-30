@@ -86,8 +86,7 @@ public final class DiskPanelView extends PanelView {
                     pct >= 95 ? DashUi.RED : pct >= 85 ? DashUi.AMBER : DashUi.WHITE_60);
             drawMonoRight(canvas, "%", right, baseline, infoSize, DashUi.WHITE_60);
 
-            int x = left + ui * 2;
-            int percentLeft = right - ui * 3;
+            int x = left + (int) mono.measureText(disk.name) + ui;
             drawMono(canvas, "R", x, baseline, infoSize, DashUi.WHITE_30);
             x += (int) mono.measureText("R") + 2;
             String read = DashUi.rate(disk.readBps);

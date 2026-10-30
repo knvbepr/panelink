@@ -85,7 +85,7 @@ public final class TopBarView extends View {
         int rateL = timeR;
         int rateR = w * 42 / 100;
         int connL = rateR;
-        int connR = w * 64 / 100;
+        int connR = w * 67 / 100;
 
         String time = DashUi.time(data.timeMs);
         drawDseg(canvas, time, timeL + ui / 2, bigBase, ui * 2, DashUi.WHITE);
@@ -95,17 +95,22 @@ public final class TopBarView extends View {
         int slot = (rateR - rateL) / 2;
         drawRateSlot(canvas, rateL, rateL + slot, smallBase, true, data.rxBps);
         drawRateSlot(canvas, rateL + slot, rateR, smallBase, false, data.txBps);
+        p.setColor(DashUi.WHITE_15);
+        canvas.drawLine(rateL + slot, h / 4, rateL + slot, h * 3 / 4, p);
+        canvas.drawLine(rateR, h / 4, rateR, h * 3 / 4, p);
 
         drawConnectivity(canvas, connL, connR, h, bigBase, smallBase);
 
         drawRight(canvas, connR, w, h, bigBase, smallBase);
     }
 
-    private void drawRateSlot(Canvas canvas, int left, int right, int baseline, boolean down,
+    private void drawRateSlot(Canvas canvas, int left, int right, int baseline, boolean rx,
                               long bps) {
         int arrow = ui / 2 + ui / 3;
-        int unitW = (int) mono.measureText("/s");
-        PixelIcons.drawArrow(canvas, p, left + 2, baseline - arrow, arrow, !down);
+        int tagSize = ui / 2 + ui / 4;
+        int unitSize = ui / 2 + ui / 3;
+        int inner = ui / 2;
+        String tag = rx ? "RX" : "TX";
         String rate = DashUi.rate(bps);
         int split = rate.length();
         while (split > 0) {
@@ -114,11 +119,26 @@ public final class TopBarView extends View {
         }
         String number = rate.substring(0, split);
         String unit = rate.substring(split);
-        mono.setTextSize(ui / 2 + ui / 3);
-        int numberRight = right - unitW - (int) mono.measureText(unit) - 4;
-        drawDsegRight(canvas, number, numberRight, baseline, ui, DashUi.WHITE);
-        drawMono(canvas, unit, numberRight, baseline, ui / 2 + ui / 3, DashUi.WHITE_60);
-        drawMonoRight(canvas, "/s", right - 2, baseline, ui / 2 + ui / 3, DashUi.WHITE_60);
+
+        mono.setTextSize(tagSize);
+        int tagW = (int) mono.measureText(tag);
+        unitSize = ui / 2 + ui / 3;
+        mono.setTextSize(ui);
+        int slashW = (int) mono.measureText("/s");
+        int unitW = (int) mono.measureText(unit);
+        dseg.setTextSize(ui);
+        int numberW = (int) dseg.measureText(number);
+        int groupW = tagW + 4 + arrow + 4 + numberW + 2 + unitW + slashW;
+        int x = Math.max(left + inner, right - inner - groupW);
+        drawMono(canvas, tag, x, baseline, tagSize, DashUi.WHITE_30);
+        x += tagW + 4;
+        PixelIcons.drawArrow(canvas, p, x, baseline - arrow, arrow, !rx);
+        x += arrow + 4;
+        drawDseg(canvas, number, x, baseline, ui, DashUi.WHITE);
+        x += numberW + 2;
+        drawMono(canvas, unit, x, baseline, unitSize, DashUi.WHITE_60);
+        x += unitW;
+        drawMono(canvas, "/s", x, baseline, unitSize, DashUi.WHITE_60);
     }
 
     private void drawConnectivity(Canvas canvas, int left, int right, int h, int bigBase,
@@ -169,7 +189,7 @@ public final class TopBarView extends View {
                 data.remoteConnected ? DashUi.GREEN
                         : data.root ? DashUi.WHITE_60 : DashUi.AMBER);
 
-        int battRight = rootRight - ui * 4;
+        int battRight = rootRight - ui * 5;
         int pctSize = ui + ui / 2;
         int pctBase = h / 2 + pctSize / 2;
         String pctText = String.format(Locale.US, "%03d", Math.max(0, data.batteryPct));

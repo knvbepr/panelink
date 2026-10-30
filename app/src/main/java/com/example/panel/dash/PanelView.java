@@ -27,7 +27,7 @@ public abstract class PanelView extends View {
     protected PanelView(Context context, android.util.AttributeSet attrs) {
         super(context, attrs);
         ui = DashUi.unit(context);
-        pad = Math.max(4, ui / 2);
+        pad = Math.max(6, ui / 2 + ui / 4);
         stroke = DashUi.stroke(context);
 
         framePaint = new Paint();

@@ -100,8 +100,8 @@ public final class CpuPanelView extends PanelView {
         for (int i = 0; i <= 4; i++) {
             int y = chartBottom - (chartBottom - chartTop) * i / 4;
             canvas.drawLine(left, y, chartRight, y, grid);
-            drawDseg(canvas, String.format(Locale.US, "%03d", i * 25), left, y + ui / 2, ui,
-                    DashUi.WHITE_30);
+            drawDseg(canvas, String.format(Locale.US, "%03d", i * 25), left,
+                    y + ui / 2 + dp(2), ui, DashUi.WHITE_30);
         }
 
         float thresholdY = chartBottom - (chartBottom - chartTop) * (THRESHOLD / 100f);

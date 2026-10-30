@@ -150,7 +150,7 @@ public final class ProcessPanelView extends PanelView {
                 continue;
             }
             PanelData.Proc proc = procs.get(i);
-            int baseline = y + rowH - 2;
+            int baseline = y + rowH - Math.max(2, ui / 8);
             drawDseg(canvas, String.valueOf(proc.pid), left, baseline, ui, DashUi.WHITE_60);
             drawMono(canvas, fit(proc.name, nameRight - pidRight - ui / 2), pidRight, baseline, ui,
                     DashUi.WHITE);
