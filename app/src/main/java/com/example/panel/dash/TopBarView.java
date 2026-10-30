@@ -79,11 +79,11 @@ public final class TopBarView extends View {
             return;
         }
 
-        // Fixed horizontal slots: time 17%, rates 25%, connectivity 22%, right 36%.
+        // Fixed slots: time 19%, rates 24%, connectivity 24%, right 33%.
         int timeL = pad;
-        int timeR = w * 17 / 100;
+        int timeR = w * 19 / 100;
         int rateL = timeR;
-        int rateR = w * 42 / 100;
+        int rateR = w * 43 / 100;
         int connL = rateR;
         int connR = w * 67 / 100;
 
@@ -146,33 +146,32 @@ public final class TopBarView extends View {
         int quarter = (right - left) / 4;
         int icon = ui - 2;
         int cy = h / 2;
+        int labelSize = ui / 2 + ui / 3;
 
-        int wifiX = left + 2;
-        PixelIcons.drawWifi(canvas, p, wifiX, cy - icon / 2, icon, data.wifiConnected,
-                data.internetState, data.txBps > 1024, data.rxBps > 1024);
-        drawMono(canvas, "WIFI", wifiX + icon + 3, smallBase, ui / 2 + ui / 4,
-                data.wifiConnected ? DashUi.WHITE_60 : DashUi.WHITE_30);
+        int wifiCx = left + quarter / 2;
+        PixelIcons.drawWifi(canvas, p, wifiCx - icon / 2, cy - icon / 2, icon,
+                data.wifiConnected, data.internetState, data.txBps > 1024, data.rxBps > 1024);
 
-        int cellX = left + quarter + 2;
-        PixelIcons.drawSignal(canvas, p, cellX, cy - icon / 2, icon, data.cellConnected);
+        int cellCx = left + quarter + quarter / 2;
         String gen = data.cellConnected ? data.cellType : "无";
-        drawCjk(canvas, gen, cellX + icon + 3, smallBase, ui / 2 + ui / 3,
-                data.cellConnected ? DashUi.WHITE : DashUi.WHITE_30);
-
-        int ethX = left + quarter * 2 + 2;
-        if (data.ethernet) {
-            PixelIcons.drawEthernet(canvas, p, ethX, cy - icon / 2, icon);
-            drawMono(canvas, "ETH", ethX + icon + 2, smallBase, ui / 2 + ui / 4, DashUi.WHITE_60);
+        mono.setTextSize(labelSize);
+        int genW = (int) mono.measureText(gen);
+        int cellGroup = icon + 4 + genW;
+        int cellStart = cellCx - cellGroup / 2;
+        PixelIcons.drawSignal(canvas, p, cellStart, cy - icon / 2, icon, data.cellConnected);
+        if (data.cellConnected) {
+            drawMono(canvas, gen, cellStart + icon + 4, smallBase, labelSize, DashUi.WHITE_60);
         } else {
-            drawMono(canvas, "ETH", ethX + 2, smallBase, ui / 2 + ui / 4, DashUi.WHITE_20);
+            drawCjk(canvas, gen, cellStart + icon + 4, smallBase, labelSize, DashUi.WHITE_30);
         }
 
-        int usbX = left + quarter * 3 + 2;
+        if (data.ethernet) {
+            int ethCx = left + quarter * 2 + quarter / 2;
+            PixelIcons.drawEthernet(canvas, p, ethCx - icon / 2, cy - icon / 2, icon);
+        }
         if (data.usbPlugged) {
-            PixelIcons.drawUsb(canvas, p, usbX, cy - icon / 2, icon);
-            drawMono(canvas, "USB", usbX + icon + 2, smallBase, ui / 2 + ui / 4, DashUi.WHITE_60);
-        } else {
-            drawMono(canvas, "USB", usbX + 2, smallBase, ui / 2 + ui / 4, DashUi.WHITE_20);
+            int usbCx = left + quarter * 3 + quarter / 2;
+            PixelIcons.drawUsb(canvas, p, usbCx - icon / 2, cy - icon / 2, icon);
         }
     }
 
@@ -232,6 +231,24 @@ public final class TopBarView extends View {
             drawMono(canvas, "mA", start + stateW + gap + currentW, smallBase, ui,
                     DashUi.WHITE_60);
         }
+    }
+
+    private void drawMonoCentered(Canvas canvas, String text, int cx, int baseline, int size,
+                                  int color) {
+        mono.setTextSize(size);
+        mono.setColor(color);
+        mono.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText(text, cx, baseline, mono);
+        mono.setTextAlign(Paint.Align.LEFT);
+    }
+
+    private void drawCjkCentered(Canvas canvas, String text, int cx, int baseline, int size,
+                                 int color) {
+        cjk.setTextSize(size);
+        cjk.setColor(color);
+        cjk.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText(text, cx, baseline, cjk);
+        cjk.setTextAlign(Paint.Align.LEFT);
     }
 
     private void drawCjk(Canvas canvas, String text, int x, int baseline, int size, int color) {

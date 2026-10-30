@@ -330,6 +330,10 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
         }
         if (keyCode == KeyEvent.KEYCODE_BACK
                 && settingsOverlay.getVisibility() == View.VISIBLE) {
+            if (settingsOverlay.isNumericEditVisible()) {
+                settingsOverlay.cancelNumericEdit();
+                return true;
+            }
             if (settingsOverlay.isExitConfirmVisible()) {
                 settingsOverlay.cancelExitConfirm();
                 return true;
@@ -373,7 +377,7 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
 
     @Override
     public void onClosed() {
-        settingsOverlay.cancelExitConfirm();
+        settingsOverlay.cancelEditors();
         settingsOverlay.setVisibility(View.GONE);
     }
 

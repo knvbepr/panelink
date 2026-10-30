@@ -55,7 +55,15 @@ public final class SettingsOverlayView extends View {
     private final Rect exitDialogRect = new Rect();
     private final Rect exitCancelRect = new Rect();
     private final Rect exitOkRect = new Rect();
+    private final Rect editDialogRect = new Rect();
+    private final Rect[] keyRects = new Rect[12];
+    private final Rect editBackRect = new Rect();
+    private final Rect editCancelRect = new Rect();
+    private final Rect editOkRect = new Rect();
     private boolean confirmExit;
+    private int editingRow = -1;
+    private final StringBuilder editText = new StringBuilder();
+    private boolean editFresh;
 
     private int rowH;
     private int labelSize;
@@ -85,6 +93,9 @@ public final class SettingsOverlayView extends View {
             rowRects[i] = new Rect();
             minusRects[i] = new Rect();
             plusRects[i] = new Rect();
+        }
+        for (int i = 0; i < keyRects.length; i++) {
+            keyRects[i] = new Rect();
         }
     }
 
@@ -163,7 +174,9 @@ public final class SettingsOverlayView extends View {
         canvas.drawRect(backRect, p);
         drawCjk(canvas, "返回", backRect.left + ui / 2,
                 backRect.centerY() + labelSize / 3, labelSize, DashUi.WHITE);
-        if (confirmExit) {
+        if (editingRow >= 0) {
+            drawNumericEditor(canvas, w, h);
+        } else if (confirmExit) {
             drawExitConfirm(canvas, w, h);
         }
     }
@@ -210,8 +223,216 @@ public final class SettingsOverlayView extends View {
         cjk.setTextAlign(Paint.Align.LEFT);
     }
 
+    private void drawNumericEditor(Canvas canvas, int w, int h) {
+        p.setStyle(Paint.Style.FILL);
+        p.setColor(0xB0000000);
+        canvas.drawRect(0, 0, w, h, p);
+
+        int dw = Math.min(w * 7 / 10, ui * 40);
+        int dh = Math.min(h * 9 / 10, ui * 26);
+        int left = (w - dw) / 2;
+        int top = (h - dh) / 2;
+        editDialogRect.set(left, top, left + dw, top + dh);
+
+        p.setColor(DashUi.BLACK);
+        canvas.drawRect(editDialogRect, p);
+        p.setStyle(Paint.Style.STROKE);
+        p.setStrokeWidth(1);
+        p.setColor(DashUi.WHITE_60);
+        canvas.drawRect(editDialogRect, p);
+
+        drawCjk(canvas, labelFor(editingRow), left + ui, top + ui * 2, labelSize, DashUi.WHITE);
+        String shown = editText.length() == 0 ? "0" : editText.toString();
+        drawDsegRight(canvas, shown, left + dw - ui, top + ui * 2, ui * 2, DashUi.WHITE);
+        p.setColor(DashUi.WHITE_20);
+        canvas.drawLine(left + ui, top + ui * 3, left + dw - ui, top + ui * 3, p);
+
+        int gridLeft = left + ui;
+        int gridTop = top + ui * 4;
+        int gridBottom = top + dh - ui * 4;
+        int keyW = (dw - ui * 2) / 3;
+        int keyH = Math.max(ui * 2, (gridBottom - gridTop) / 4);
+        String[] keys = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "-", "0", "."};
+        for (int i = 0; i < 12; i++) {
+            int col = i % 3;
+            int row = i / 3;
+            int x = gridLeft + col * keyW;
+            int y = gridTop + row * keyH;
+            keyRects[i].set(x, y, x + keyW, y + keyH);
+            p.setColor(DashUi.WHITE_30);
+            canvas.drawRect(keyRects[i], p);
+            dseg.setTextSize(ui * 2);
+            dseg.setColor(DashUi.WHITE);
+            dseg.setTextAlign(Paint.Align.CENTER);
+            canvas.drawText(keys[i], keyRects[i].centerX(), keyRects[i].centerY() + ui / 2, dseg);
+            dseg.setTextAlign(Paint.Align.LEFT);
+        }
+
+        int actionY = top + dh - ui * 3;
+        int actionH = ui * 2;
+        int actionW = (dw - ui * 4) / 3;
+        editBackRect.set(left + ui, actionY, left + ui + actionW, actionY + actionH);
+        editCancelRect.set(left + ui * 2 + actionW, actionY,
+                left + ui * 2 + actionW * 2, actionY + actionH);
+        editOkRect.set(left + ui * 3 + actionW * 2, actionY,
+                left + ui * 3 + actionW * 3, actionY + actionH);
+        drawDialogButton(canvas, editBackRect, "退格", DashUi.WHITE_30);
+        drawDialogButton(canvas, editCancelRect, "取消", DashUi.WHITE_30);
+        drawDialogButton(canvas, editOkRect, "确定", DashUi.WHITE);
+    }
+
+    private String labelFor(int row) {
+        switch (row) {
+            case ROW_PORT: return "端口";
+            case ROW_INTERVAL: return "刷新间隔 ms";
+            case ROW_ROWS: return "进程行数";
+            case ROW_BATT_SCALE: return "电流倍率";
+            case ROW_BATT_OFFSET: return "电流偏移 mA";
+            case ROW_TEMP_OFFSET: return "温度偏移 C";
+            case ROW_TEMP_WARN: return "温度预警 C";
+            case ROW_TEMP_FAULT: return "温度报警 C";
+            default: return "";
+        }
+    }
+
+    private String rawValue(int row) {
+        switch (row) {
+            case ROW_PORT: return String.valueOf(settings.remotePort);
+            case ROW_INTERVAL: return String.valueOf(settings.intervalMs);
+            case ROW_ROWS: return String.valueOf(settings.procRows);
+            case ROW_BATT_SCALE: return String.format(Locale.US, "%.2f", settings.battScale);
+            case ROW_BATT_OFFSET: return String.valueOf(settings.battOffsetMa);
+            case ROW_TEMP_OFFSET: return String.format(Locale.US, "%.1f", settings.tempOffsetC);
+            case ROW_TEMP_WARN: return String.format(Locale.US, "%.0f", settings.tempWarnC);
+            case ROW_TEMP_FAULT: return String.format(Locale.US, "%.0f", settings.tempFaultC);
+            default: return "";
+        }
+    }
+
+    private void beginEdit(int row) {
+        editingRow = row;
+        editText.setLength(0);
+        editText.append(rawValue(row));
+        editFresh = true;
+        confirmExit = false;
+        invalidate();
+    }
+
+    public void cancelNumericEdit() {
+        editingRow = -1;
+        invalidate();
+    }
+
+    public boolean isNumericEditVisible() {
+        return editingRow >= 0;
+    }
+
+    private void handleNumericTouch(int x, int y) {
+        for (int i = 0; i < keyRects.length; i++) {
+            if (!keyRects[i].contains(x, y)) {
+                continue;
+            }
+            String key = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "-",
+                    "0", "."}[i];
+            if (editFresh) {
+                editText.setLength(0);
+                editFresh = false;
+            }
+            if (".".equals(key)) {
+                if (editText.indexOf(".") < 0) {
+                    editText.append('.');
+                }
+            } else if ("-".equals(key)) {
+                if (editText.length() == 0 || editText.charAt(0) != '-') {
+                    editText.insert(0, '-');
+                } else {
+                    editText.deleteCharAt(0);
+                }
+            } else if (editText.length() < 9) {
+                editText.append(key);
+            }
+            invalidate();
+            return;
+        }
+        if (editBackRect.contains(x, y)) {
+            if (editFresh) {
+                editText.setLength(0);
+                editFresh = false;
+            } else if (editText.length() > 0) {
+                editText.deleteCharAt(editText.length() - 1);
+            }
+            invalidate();
+            return;
+        }
+        if (editCancelRect.contains(x, y)) {
+            editingRow = -1;
+            invalidate();
+            return;
+        }
+        if (editOkRect.contains(x, y)) {
+            applyEdited();
+            return;
+        }
+        if (!editDialogRect.contains(x, y)) {
+            editingRow = -1;
+            invalidate();
+        }
+    }
+
+    private void applyEdited() {
+        String text = editText.toString();
+        if (text.isEmpty() || "-".equals(text) || ".".equals(text)) {
+            editingRow = -1;
+            return;
+        }
+        try {
+            int row = editingRow;
+            switch (row) {
+                case ROW_PORT:
+                    settings.remotePort = clamp(Integer.parseInt(text), 1024, 65535);
+                    break;
+                case ROW_INTERVAL:
+                    settings.intervalMs = clamp(Integer.parseInt(text), 100, 5000);
+                    break;
+                case ROW_ROWS:
+                    settings.procRows = clamp(Integer.parseInt(text), 3, 20);
+                    break;
+                case ROW_BATT_SCALE:
+                    settings.battScale = clamp(Float.parseFloat(text), 0.5f, 2f);
+                    break;
+                case ROW_BATT_OFFSET:
+                    settings.battOffsetMa = clamp(Integer.parseInt(text), -1000, 1000);
+                    break;
+                case ROW_TEMP_OFFSET:
+                    settings.tempOffsetC = clamp(Float.parseFloat(text), -20f, 20f);
+                    break;
+                case ROW_TEMP_WARN:
+                    settings.tempWarnC = clamp(Float.parseFloat(text), 30f,
+                            Math.max(30f, settings.tempFaultC - 1f));
+                    break;
+                case ROW_TEMP_FAULT:
+                    settings.tempFaultC = clamp(Float.parseFloat(text),
+                            settings.tempWarnC + 1f, 120f);
+                    break;
+                default:
+                    break;
+            }
+            editingRow = -1;
+            changed();
+        } catch (Exception ignored) {
+            // invalid text: leave the editor open
+        }
+        invalidate();
+    }
+
     public void cancelExitConfirm() {
         confirmExit = false;
+        invalidate();
+    }
+
+    public void cancelEditors() {
+        confirmExit = false;
+        editingRow = -1;
         invalidate();
     }
 
@@ -226,7 +447,7 @@ public final class SettingsOverlayView extends View {
         minusRects[index].set(right - btn * 2 - ui / 2, y + (rowH - btn) / 2,
                 right - btn - ui / 2, y + (rowH + btn) / 2);
         if (index == ROW_HOST) {
-            int hb = Math.min(ui * 4, right - left);
+            int hb = Math.min(ui * 5, right - left);
             hostEditRect.set(right - hb, y + (rowH - btn) / 2, right,
                     y + (rowH + btn) / 2);
         }
@@ -321,7 +542,7 @@ public final class SettingsOverlayView extends View {
                 color = settings.fullscreen ? DashUi.GREEN : DashUi.WHITE_60;
             }
             if (index == ROW_HOST) {
-                drawMonoRight(canvas, value, hostEditRect.left - ui / 2, baseline, valueSize,
+                drawMonoRight(canvas, value, hostEditRect.left - ui, baseline, valueSize,
                         DashUi.WHITE_60);
                 drawTextButton(canvas, hostEditRect, "编辑", valueSize);
             } else {
@@ -367,6 +588,10 @@ public final class SettingsOverlayView extends View {
         }
         int x = (int) event.getX();
         int y = (int) event.getY();
+        if (editingRow >= 0) {
+            handleNumericTouch(x, y);
+            return true;
+        }
         if (confirmExit) {
             if (exitOkRect.contains(x, y)) {
                 confirmExit = false;
@@ -422,6 +647,8 @@ public final class SettingsOverlayView extends View {
                         step(i, -1);
                     } else if (plusRects[i].contains(x, y)) {
                         step(i, 1);
+                    } else {
+                        beginEdit(i);
                     }
                     break;
             }
@@ -469,6 +696,15 @@ public final class SettingsOverlayView extends View {
         if (listener != null) {
             listener.onSettingsChanged();
         }
+    }
+
+    private void drawDsegRight(Canvas canvas, String text, int right, int baseline, int size,
+                               int color) {
+        dseg.setTextSize(size);
+        dseg.setColor(color);
+        dseg.setTextAlign(Paint.Align.RIGHT);
+        canvas.drawText(text, right, baseline, dseg);
+        dseg.setTextAlign(Paint.Align.LEFT);
     }
 
     private void drawCjk(Canvas canvas, String text, int x, int baseline, int size, int color) {
