@@ -57,6 +57,14 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
             if (debugPort > 0) {
                 settings.remotePort = debugPort;
             }
+            float debugWarn = getIntent().getFloatExtra("temp_warn", -1f);
+            if (debugWarn > 0) {
+                settings.tempWarnC = debugWarn;
+            }
+            float debugFault = getIntent().getFloatExtra("temp_fault", -1f);
+            if (debugFault > 0) {
+                settings.tempFaultC = debugFault;
+            }
             settings.save(this);
         }
 

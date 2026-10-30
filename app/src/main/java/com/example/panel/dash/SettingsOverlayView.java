@@ -29,15 +29,16 @@ public final class SettingsOverlayView extends View {
     private static final int ROW_FULLSCREEN = 3;
     private static final int ROW_INTERVAL = 4;
     private static final int ROW_ROWS = 5;
-    private static final int ROW_BATT_SCALE = 6;
-    private static final int ROW_BATT_OFFSET = 7;
-    private static final int ROW_TEMP_OFFSET = 8;
-    private static final int ROW_TEMP_FAULT = 9;
-    private static final int ROW_RESET = 10;
-    private static final int ROW_CLOSE = 11;
-    private static final int ROWS = 12;
+    private static final int ROW_TEMP_WARN = 6;
+    private static final int ROW_BATT_SCALE = 7;
+    private static final int ROW_BATT_OFFSET = 8;
+    private static final int ROW_TEMP_OFFSET = 9;
+    private static final int ROW_TEMP_FAULT = 10;
+    private static final int ROW_RESET = 11;
+    private static final int ROW_CLOSE = 12;
+    private static final int ROWS = 13;
     private static final int COLS = 2;
-    private static final int PER_COL = 6;
+    private static final int PER_COL = 7;
 
     private final int ui;
     private final Paint p = new Paint();
@@ -208,6 +209,11 @@ public final class SettingsOverlayView extends View {
                 value = String.valueOf(settings.procRows);
                 hasStep = true;
                 break;
+            case ROW_TEMP_WARN:
+                label = "温度预警";
+                value = String.format(Locale.US, "%.0fC", settings.tempWarnC);
+                hasStep = true;
+                break;
             case ROW_BATT_SCALE:
                 label = "电流倍率";
                 value = String.format(Locale.US, "%.2f", settings.battScale);
@@ -224,7 +230,7 @@ public final class SettingsOverlayView extends View {
                 hasStep = true;
                 break;
             case ROW_TEMP_FAULT:
-                label = "温度告警";
+                label = "温度报警";
                 value = String.format(Locale.US, "%.0fC", settings.tempFaultC);
                 hasStep = true;
                 break;
@@ -377,8 +383,13 @@ public final class SettingsOverlayView extends View {
             case ROW_TEMP_OFFSET:
                 settings.tempOffsetC = clamp(settings.tempOffsetC + direction * 0.5f, -20f, 20f);
                 break;
+            case ROW_TEMP_WARN:
+                settings.tempWarnC = clamp(settings.tempWarnC + direction, 30f,
+                        Math.max(30f, settings.tempFaultC - 1f));
+                break;
             case ROW_TEMP_FAULT:
-                settings.tempFaultC = clamp(settings.tempFaultC + direction, 30f, 120f);
+                settings.tempFaultC = clamp(settings.tempFaultC + direction,
+                        settings.tempWarnC + 1f, 120f);
                 break;
             default:
                 return;

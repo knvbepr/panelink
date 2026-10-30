@@ -11,7 +11,8 @@ service for a Windows PC.
 - Fixed top-bar slots: changing digit widths never push neighbouring items sideways.
 - No third-party UI/chart libraries; Canvas drawing, DSEG + JetBrains Mono + WenQuanYi
   Bitmap Song 16px pixel font.
-- Fault blinking is continuous and runs at a 0.5 s phase.
+- Temperature warning uses amber, alarm uses red; both thresholds are adjustable in
+  settings. Fault blinking is continuous and runs at a 0.5 s phase.
 
 ## Remote protocol
 
