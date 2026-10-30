@@ -38,15 +38,22 @@ public final class GpuPanelView extends PanelView {
         int count = Math.min(2, data.gpus.size());
         int bottom = getHeight() - pad;
         int rowH = Math.max(ui * 2 + ui / 2, (bottom - top) / count);
+        boolean anyOverload = false;
         for (int i = 0; i < count; i++) {
             PanelData.RemoteGpu gpu = data.gpus.get(i);
             int y = top + i * rowH;
             String name = fit(gpu.name, right - left - ui * 5);
             drawMono(canvas, name, left, y + ui, ui, DashUi.WHITE);
             if (gpu.loadPct >= 0) {
-                drawMonoRight(canvas, "%", right, y + ui, ui / 2, DashUi.WHITE_60);
-                drawDsegRight(canvas, DashUi.percent(gpu.loadPct), right - ui, y + ui, ui,
-                        gpu.loadPct >= 90 ? DashUi.RED : gpu.loadPct >= 75 ? DashUi.AMBER : DashUi.WHITE);
+                if (gpu.loadPct >= 90) {
+                    anyOverload = true;
+                    drawPercentBadge(canvas, DashUi.percent(gpu.loadPct), right, y + ui,
+                            ui, ui / 2, overloadSolid());
+                } else {
+                    drawMonoRight(canvas, "%", right, y + ui, ui / 2, DashUi.WHITE_60);
+                    drawDsegRight(canvas, DashUi.percent(gpu.loadPct), right - ui, y + ui, ui,
+                            gpu.loadPct >= 75 ? DashUi.AMBER : DashUi.WHITE);
+                }
             } else {
                 drawMonoRight(canvas, "N/A", right, y + ui, ui, DashUi.WHITE_30);
             }
@@ -72,6 +79,9 @@ public final class GpuPanelView extends PanelView {
                             right, note, ui / 2 + ui / 3, DashUi.WHITE_30);
                 }
             }
+        }
+        if (anyOverload) {
+            scheduleOverloadBlink();
         }
         if (data.gpus.size() > 2) {
             drawMonoRight(canvas, "+" + (data.gpus.size() - 2), right, getHeight() - pad, ui, DashUi.WHITE_30);
@@ -113,10 +123,16 @@ public final class GpuPanelView extends PanelView {
                 ui / 2, DashUi.WHITE_60);
 
         if (data.gpuLoadPct >= 0) {
-            drawMonoRight(canvas, "%", right, freqBaseline + 2, ui, DashUi.WHITE_60);
-            drawDsegRight(canvas, DashUi.percent(data.gpuLoadPct), right - ui, freqBaseline + 2,
-                    ui * 2, data.gpuLoadPct >= 90 ? DashUi.RED
-                            : data.gpuLoadPct >= 75 ? DashUi.AMBER : DashUi.WHITE);
+            if (data.gpuLoadPct >= 90) {
+                drawPercentBadge(canvas, DashUi.percent(data.gpuLoadPct), right,
+                        freqBaseline + 2, ui * 2, ui, overloadSolid());
+                scheduleOverloadBlink();
+            } else {
+                drawMonoRight(canvas, "%", right, freqBaseline + 2, ui, DashUi.WHITE_60);
+                drawDsegRight(canvas, DashUi.percent(data.gpuLoadPct), right - ui,
+                        freqBaseline + 2, ui * 2,
+                        data.gpuLoadPct >= 75 ? DashUi.AMBER : DashUi.WHITE);
+            }
         } else {
             drawCjk(canvas, "无效", right - ui * 3, freqBaseline, ui, DashUi.WHITE_30);
         }

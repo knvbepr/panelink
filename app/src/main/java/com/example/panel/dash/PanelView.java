@@ -94,6 +94,42 @@ public abstract class PanelView extends View {
         dseg.setTextAlign(Paint.Align.LEFT);
     }
 
+    /** Red filled badge behind a percentage value, used for overload states. */
+    protected boolean overloadSolid() {
+        return (android.os.SystemClock.uptimeMillis() / 500) % 2 == 0;
+    }
+
+    protected void scheduleOverloadBlink() {
+        postInvalidateDelayed(250);
+    }
+
+    protected void drawPercentBadge(Canvas canvas, String value, int right, int baseline,
+                                    int valueSize, int unitSize, boolean solid) {
+        Paint badge = new Paint();
+        badge.setAntiAlias(false);
+        badge.setColor(solid ? DashUi.RED : DashUi.BLACK);
+        int pad = Math.max(2, ui / 4);
+        dseg.setTextSize(valueSize);
+        int valueW = (int) dseg.measureText(value);
+        mono.setTextSize(unitSize);
+        int unitW = (int) mono.measureText("%");
+        int left = right - unitW - valueW - pad * 3;
+        int top = baseline - valueSize - ui / 4;
+        int bottom = baseline + ui / 4;
+        canvas.drawRect(left, top, right, bottom, badge);
+        if (!solid) {
+            Paint outline = new Paint();
+            outline.setAntiAlias(false);
+            outline.setStyle(Paint.Style.STROKE);
+            outline.setStrokeWidth(1);
+            outline.setColor(DashUi.RED);
+            canvas.drawRect(left, top, right, bottom, outline);
+        }
+        int textColor = solid ? DashUi.BLACK : DashUi.RED;
+        drawDsegRight(canvas, value, right - unitW - pad, baseline, valueSize, textColor);
+        drawMonoRight(canvas, "%", right - pad, baseline, unitSize, textColor);
+    }
+
     protected void drawMonoRight(Canvas canvas, String text, int right, int baseline, int size,
                                  int color) {
         mono.setTextSize(size);

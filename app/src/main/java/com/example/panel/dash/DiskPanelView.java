@@ -41,10 +41,16 @@ public final class DiskPanelView extends PanelView {
         }
         float pct = 100f * data.diskUsedKb / data.diskTotalKb;
         int color = pct >= 95 ? DashUi.RED : pct >= 85 ? DashUi.AMBER : DashUi.WHITE;
-        drawMonoRight(canvas, "%", getWidth() - pad, titleBaseline() + ui / 2 + 2, ui,
-                DashUi.WHITE_60);
-        drawDsegRight(canvas, DashUi.percent(pct), getWidth() - pad - ui,
-                titleBaseline() + ui / 2 + 2, ui * 2, color);
+        if (pct >= 95) {
+            drawPercentBadge(canvas, DashUi.percent(pct), getWidth() - pad,
+                    titleBaseline() + ui / 2 + 2, ui * 2, ui, overloadSolid());
+            scheduleOverloadBlink();
+        } else {
+            drawMonoRight(canvas, "%", getWidth() - pad, titleBaseline() + ui / 2 + 2, ui,
+                    DashUi.WHITE_60);
+            drawDsegRight(canvas, DashUi.percent(pct), getWidth() - pad - ui,
+                    titleBaseline() + ui / 2 + 2, ui * 2, color);
+        }
 
         int left = pad;
         int right = getWidth() - pad;
@@ -76,17 +82,24 @@ public final class DiskPanelView extends PanelView {
         int count = Math.min(3, data.disks.size());
         int rowH = Math.max(ui + ui / 2, (bottom - top) / count);
         int infoSize = ui * 3 / 4;
+        boolean anyOverload = false;
         for (int i = 0; i < count; i++) {
             PanelData.RemoteDisk disk = data.disks.get(i);
             int y = top + i * rowH;
             int baseline = y + ui;
             long pct = disk.totalBytes > 0 ? disk.usedBytes * 100 / disk.totalBytes : 0;
             drawMono(canvas, disk.name, left, baseline, ui, DashUi.WHITE);
-            mono.setTextSize(infoSize);
-            int unitW = (int) mono.measureText("%");
-            drawDsegRight(canvas, DashUi.percent(pct), right - unitW - 2, baseline, ui,
-                    pct >= 95 ? DashUi.RED : pct >= 85 ? DashUi.AMBER : DashUi.WHITE_60);
-            drawMonoRight(canvas, "%", right, baseline, infoSize, DashUi.WHITE_60);
+            if (pct >= 95) {
+                anyOverload = true;
+                drawPercentBadge(canvas, DashUi.percent(pct), right, baseline, ui, infoSize,
+                        overloadSolid());
+            } else {
+                mono.setTextSize(infoSize);
+                int unitW = (int) mono.measureText("%");
+                drawDsegRight(canvas, DashUi.percent(pct), right - unitW - 2, baseline, ui,
+                        pct >= 85 ? DashUi.AMBER : DashUi.WHITE_60);
+                drawMonoRight(canvas, "%", right, baseline, infoSize, DashUi.WHITE_60);
+            }
 
             int x = left + (int) mono.measureText(disk.name) + ui;
             drawMono(canvas, "R", x, baseline, infoSize, DashUi.WHITE_30);
@@ -110,6 +123,9 @@ public final class DiskPanelView extends PanelView {
             fill.setColor(pct >= 95 ? DashUi.RED : pct >= 85 ? DashUi.AMBER : DashUi.WHITE);
             canvas.drawRect(left + 1, barTop + 1, left + 1 + (right - left - 2) * pct / 100f,
                     barBottom - 1, fill);
+        }
+        if (anyOverload) {
+            scheduleOverloadBlink();
         }
     }
 

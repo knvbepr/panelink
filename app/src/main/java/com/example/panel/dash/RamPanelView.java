@@ -38,10 +38,16 @@ public final class RamPanelView extends PanelView {
 
         float pct = 100f * data.memUsedKb / data.memTotalKb;
         int color = pct >= 95 ? DashUi.RED : pct >= 85 ? DashUi.AMBER : DashUi.WHITE;
-        drawMonoRight(canvas, "%", getWidth() - pad, titleBaseline() + ui / 2 + 2, ui,
-                DashUi.WHITE_60);
-        drawDsegRight(canvas, DashUi.percent(pct), getWidth() - pad - ui,
-                titleBaseline() + ui / 2 + 2, ui * 2, color);
+        if (pct >= 95) {
+            drawPercentBadge(canvas, DashUi.percent(pct), getWidth() - pad,
+                    titleBaseline() + ui / 2 + 2, ui * 2, ui, overloadSolid());
+            scheduleOverloadBlink();
+        } else {
+            drawMonoRight(canvas, "%", getWidth() - pad, titleBaseline() + ui / 2 + 2, ui,
+                    DashUi.WHITE_60);
+            drawDsegRight(canvas, DashUi.percent(pct), getWidth() - pad - ui,
+                    titleBaseline() + ui / 2 + 2, ui * 2, color);
+        }
 
         int barTop = titleBaseline() + ui + ui / 2;
         int barBottom = barTop + Math.max(6, ui / 2);

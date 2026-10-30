@@ -29,6 +29,7 @@ public final class CpuPanelView extends PanelView {
     private final Paint dashed = new Paint();
     private final Paint cautionLine = new Paint();
     private final Paint badgeFill = new Paint();
+    private final Paint badgeStroke = new Paint();
 
     public CpuPanelView(Context context) {
         this(context, null);
@@ -51,6 +52,10 @@ public final class CpuPanelView extends PanelView {
         cautionLine.setColor(DashUi.AMBER);
         cautionLine.setPathEffect(new DashPathEffect(new float[]{dp(2), dp(4)}, 0));
         badgeFill.setAntiAlias(false);
+        badgeStroke.setAntiAlias(false);
+        badgeStroke.setStyle(Paint.Style.STROKE);
+        badgeStroke.setStrokeWidth(1);
+        badgeStroke.setColor(DashUi.RED);
     }
 
     public void setThresholds(int caution, int alarm) {
@@ -108,14 +113,18 @@ public final class CpuPanelView extends PanelView {
                 int badgeH = ui + ui / 2;
                 int badgeTop = titleBaseline() - badgeH + ui / 2;
                 if (alarm) {
-                    badgeFill.setColor(solid ? DashUi.RED : 0x55FF1744);
+                    badgeFill.setColor(solid ? DashUi.RED : DashUi.BLACK);
                 } else {
                     badgeFill.setColor(DashUi.AMBER);
                 }
                 canvas.drawRect(cursor, badgeTop, cursor + badgeW,
                         titleBaseline() + ui / 2, badgeFill);
+                if (alarm && !solid) {
+                    canvas.drawRect(cursor, badgeTop, cursor + badgeW,
+                            titleBaseline() + ui / 2, badgeStroke);
+                }
                 drawCjk(canvas, badgeText, cursor + ui / 2, titleBaseline(), ui,
-                        solid ? DashUi.BLACK : DashUi.WHITE);
+                        alarm && !solid ? DashUi.RED : DashUi.BLACK);
                 cursor += badgeW + ui;
                 if (alarm) {
                     postInvalidateDelayed(250);
