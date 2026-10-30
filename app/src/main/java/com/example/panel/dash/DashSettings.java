@@ -19,11 +19,13 @@ public final class DashSettings {
     private static final String K_REMOTE_HOST = "remote_host";
     private static final String K_REMOTE_PORT = "remote_port";
     private static final String K_CPU_WARN = "cpu_warn";
+    private static final String K_CPU_CAUTION = "cpu_caution";
 
     public boolean fullscreen = true;
     public int intervalMs = 1000;
     public int procRows = 8;
     public int cpuWarnPct = 80;
+    public int cpuCautionPct = 70;
     public float battScale = 1.0f;
     public int battOffsetMa = 0;
     public float tempOffsetC = 0f;
@@ -38,7 +40,8 @@ public final class DashSettings {
         fullscreen = p.getBoolean(K_FULLSCREEN, true);
         intervalMs = clamp(p.getInt(K_INTERVAL, 1000), 100, 5000);
         procRows = clamp(p.getInt(K_ROWS, 8), 3, 20);
-        cpuWarnPct = clamp(p.getInt(K_CPU_WARN, 80), 40, 99);
+        cpuWarnPct = clamp(p.getInt(K_CPU_WARN, 80), 50, 99);
+        cpuCautionPct = clamp(p.getInt(K_CPU_CAUTION, 70), 40, cpuWarnPct - 1);
         battScale = clamp(p.getFloat(K_BATT_SCALE, 1f), 0.5f, 2f);
         battOffsetMa = clamp(p.getInt(K_BATT_OFFSET, 0), -1000, 1000);
         tempOffsetC = clamp(p.getFloat(K_TEMP_OFFSET, 0f), -20f, 20f);
@@ -55,6 +58,7 @@ public final class DashSettings {
                 .putInt(K_INTERVAL, intervalMs)
                 .putInt(K_ROWS, procRows)
                 .putInt(K_CPU_WARN, cpuWarnPct)
+                .putInt(K_CPU_CAUTION, cpuCautionPct)
                 .putFloat(K_BATT_SCALE, battScale)
                 .putInt(K_BATT_OFFSET, battOffsetMa)
                 .putFloat(K_TEMP_OFFSET, tempOffsetC)
@@ -71,6 +75,7 @@ public final class DashSettings {
         intervalMs = 1000;
         procRows = 8;
         cpuWarnPct = 80;
+        cpuCautionPct = 70;
         battScale = 1f;
         battOffsetMa = 0;
         tempOffsetC = 0f;

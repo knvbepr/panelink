@@ -69,6 +69,10 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
             if (debugCpuWarn > 0) {
                 settings.cpuWarnPct = debugCpuWarn;
             }
+            int debugCpuCaution = getIntent().getIntExtra("cpu_caution", -1);
+            if (debugCpuCaution > 0) {
+                settings.cpuCautionPct = debugCpuCaution;
+            }
             settings.save(this);
         }
 
@@ -87,7 +91,7 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
         }
 
         tempPanel.setThresholds(settings.tempWarnC, settings.tempFaultC);
-        cpuPanel.setThreshold(settings.cpuWarnPct);
+        cpuPanel.setThresholds(settings.cpuCautionPct, settings.cpuWarnPct);
         settingsOverlay.setSettings(settings, this);
         settingsOverlay.setVisibility(View.GONE);
         settingsOverlay.setRemoteStatus(remoteStatus);
@@ -379,7 +383,7 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
 
         settingsOverlay.setRemoteStatus(remoteStatus);
         tempPanel.setThresholds(settings.tempWarnC, settings.tempFaultC);
-        cpuPanel.setThreshold(settings.cpuWarnPct);
+        cpuPanel.setThresholds(settings.cpuCautionPct, settings.cpuWarnPct);
         updateProcessHeight();
         applyFullscreen();
         if (poller != null) {

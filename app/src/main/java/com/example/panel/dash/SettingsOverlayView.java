@@ -13,7 +13,7 @@ import java.util.Locale;
 /** Two-column settings sheet with wide rows and large +/- targets. */
 public final class SettingsOverlayView extends View {
 
-    private static final String VERSION = "1.5.2";
+    private static final String VERSION = "1.5.3";
 
     public interface Listener {
         void onSettingsChanged();
@@ -34,16 +34,17 @@ public final class SettingsOverlayView extends View {
     private static final int ROW_INTERVAL = 4;
     private static final int ROW_ROWS = 5;
     private static final int ROW_TEMP_WARN = 6;
-    private static final int ROW_CPU_WARN = 7;
-    private static final int ROW_BATT_SCALE = 8;
-    private static final int ROW_BATT_OFFSET = 9;
-    private static final int ROW_TEMP_OFFSET = 10;
-    private static final int ROW_TEMP_FAULT = 11;
-    private static final int ROW_RESET = 12;
-    private static final int ROW_CLOSE = 13;
-    private static final int ROWS = 14;
+    private static final int ROW_CPU_CAUTION = 7;
+    private static final int ROW_CPU_WARN = 8;
+    private static final int ROW_BATT_SCALE = 9;
+    private static final int ROW_BATT_OFFSET = 10;
+    private static final int ROW_TEMP_OFFSET = 11;
+    private static final int ROW_TEMP_FAULT = 12;
+    private static final int ROW_RESET = 13;
+    private static final int ROW_CLOSE = 14;
+    private static final int ROWS = 15;
     private static final int COLS = 2;
-    private static final int PER_COL = 7;
+    private static final int PER_COL = 8;
 
     private final int ui;
     private final Paint p = new Paint();
@@ -158,7 +159,8 @@ public final class SettingsOverlayView extends View {
         int colGap = ui;
         int colW = (w - ui * 2 - colGap) / COLS;
         int contentTop = y + ui;
-        rowH = Math.min(ui * 3, Math.max(ui * 2, (h - contentTop - ui) / PER_COL));
+        rowH = Math.min(ui * 2 + ui * 3 / 4,
+                Math.max(ui * 2, (h - contentTop - ui) / PER_COL));
         labelSize = Math.min(ui * 2, rowH - 8);
         valueSize = Math.min(ui + ui / 2, rowH - 16);
 
@@ -343,6 +345,7 @@ public final class SettingsOverlayView extends View {
 
     private String labelFor(int row) {
         switch (row) {
+            case ROW_CPU_CAUTION: return "CPU 预警 %";
             case ROW_CPU_WARN: return "CPU 告警 %";
             case ROW_PORT: return "端口";
             case ROW_INTERVAL: return "刷新间隔 ms";
@@ -358,6 +361,7 @@ public final class SettingsOverlayView extends View {
 
     private String rawValue(int row) {
         switch (row) {
+            case ROW_CPU_CAUTION: return String.valueOf(settings.cpuCautionPct);
             case ROW_CPU_WARN: return String.valueOf(settings.cpuWarnPct);
             case ROW_PORT: return String.valueOf(settings.remotePort);
             case ROW_INTERVAL: return String.valueOf(settings.intervalMs);
@@ -453,8 +457,13 @@ public final class SettingsOverlayView extends View {
                 case ROW_PORT:
                     settings.remotePort = clamp(Integer.parseInt(text), 1024, 65535);
                     break;
+                case ROW_CPU_CAUTION:
+                    settings.cpuCautionPct = clamp(Integer.parseInt(text), 40,
+                            settings.cpuWarnPct - 1);
+                    break;
                 case ROW_CPU_WARN:
-                    settings.cpuWarnPct = clamp(Integer.parseInt(text), 40, 99);
+                    settings.cpuWarnPct = clamp(Integer.parseInt(text),
+                            settings.cpuCautionPct + 1, 99);
                     break;
                 case ROW_INTERVAL:
                     settings.intervalMs = clamp(Integer.parseInt(text), 100, 5000);
@@ -568,6 +577,11 @@ public final class SettingsOverlayView extends View {
             case ROW_TEMP_WARN:
                 label = "温度预警";
                 value = String.format(Locale.US, "%.0fC", settings.tempWarnC);
+                hasStep = true;
+                break;
+            case ROW_CPU_CAUTION:
+                label = "CPU 预警";
+                value = String.format(Locale.US, "%d%%", settings.cpuCautionPct);
                 hasStep = true;
                 break;
             case ROW_CPU_WARN:
@@ -755,8 +769,13 @@ public final class SettingsOverlayView extends View {
             case ROW_PORT:
                 settings.remotePort = clamp(settings.remotePort + direction, 1024, 65535);
                 break;
+            case ROW_CPU_CAUTION:
+                settings.cpuCautionPct = clamp(settings.cpuCautionPct + direction, 40,
+                        settings.cpuWarnPct - 1);
+                break;
             case ROW_CPU_WARN:
-                settings.cpuWarnPct = clamp(settings.cpuWarnPct + direction, 40, 99);
+                settings.cpuWarnPct = clamp(settings.cpuWarnPct + direction,
+                        settings.cpuCautionPct + 1, 99);
                 break;
             case ROW_INTERVAL:
                 settings.intervalMs = clamp(settings.intervalMs + direction * 100, 100, 5000);

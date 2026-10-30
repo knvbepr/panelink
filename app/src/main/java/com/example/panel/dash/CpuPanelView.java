@@ -14,7 +14,8 @@ import java.util.Locale;
 public final class CpuPanelView extends PanelView {
 
     private static final int HISTORY = 60;
-    private int thresholdPct = 80;
+    private int alarmPct = 80;
+    private int cautionPct = 70;
 
     private final float[] totalHistory = new float[HISTORY];
     private final float[][] coreHistory = new float[8][HISTORY];
@@ -26,6 +27,7 @@ public final class CpuPanelView extends PanelView {
     private final Paint grid = new Paint();
     private final Paint line = new Paint();
     private final Paint dashed = new Paint();
+    private final Paint cautionLine = new Paint();
     private final Paint badgeFill = new Paint();
 
     public CpuPanelView(Context context) {
@@ -44,11 +46,16 @@ public final class CpuPanelView extends PanelView {
         dashed.setStrokeWidth(1);
         dashed.setColor(DashUi.RED);
         dashed.setPathEffect(new DashPathEffect(new float[]{dp(6), dp(4)}, 0));
+        cautionLine.setAntiAlias(false);
+        cautionLine.setStrokeWidth(1);
+        cautionLine.setColor(DashUi.AMBER);
+        cautionLine.setPathEffect(new DashPathEffect(new float[]{dp(2), dp(4)}, 0));
         badgeFill.setAntiAlias(false);
     }
 
-    public void setThreshold(int pct) {
-        thresholdPct = Math.max(40, Math.min(99, pct));
+    public void setThresholds(int caution, int alarm) {
+        alarmPct = Math.max(50, Math.min(99, alarm));
+        cautionPct = Math.max(40, Math.min(alarmPct - 1, caution));
         invalidate();
     }
 
@@ -85,25 +92,34 @@ public final class CpuPanelView extends PanelView {
         if (data != null) {
             drawMonoRight(canvas, "%", right, titleBaseline() + ui / 2 + dp(2), ui,
                     DashUi.WHITE_60);
+            int cpuColor = data.cpuTotal >= alarmPct ? DashUi.RED
+                    : data.cpuTotal >= cautionPct ? DashUi.AMBER : DashUi.WHITE;
             drawDsegRight(canvas, DashUi.percent(data.cpuTotal), right - ui,
-                    titleBaseline() + ui / 2 + dp(2), ui * 2,
-                    data.cpuTotal >= thresholdPct ? DashUi.RED : DashUi.WHITE);
+                    titleBaseline() + ui / 2 + dp(2), ui * 2, cpuColor);
             String mode = perCore ? "分核" : "总占用";
             int hintX = pad + (int) cjk.measureText("CPU") + ui;
             drawCjk(canvas, mode, hintX, titleBaseline(), ui, DashUi.WHITE_60);
             int cursor = hintX + (int) cjk.measureText(mode) + ui;
-            if (data.cpuTotal >= thresholdPct) {
-                boolean solid = (SystemClock.uptimeMillis() / 500) % 2 == 0;
-                int badgeW = (int) cjk.measureText("过载") + ui;
+            if (data.cpuTotal >= cautionPct) {
+                boolean alarm = data.cpuTotal >= alarmPct;
+                boolean solid = !alarm || (SystemClock.uptimeMillis() / 500) % 2 == 0;
+                String badgeText = alarm ? "过载" : "预警";
+                int badgeW = (int) cjk.measureText(badgeText) + ui;
                 int badgeH = ui + ui / 2;
                 int badgeTop = titleBaseline() - badgeH + ui / 2;
-                badgeFill.setColor(solid ? DashUi.RED : 0x55FF1744);
+                if (alarm) {
+                    badgeFill.setColor(solid ? DashUi.RED : 0x55FF1744);
+                } else {
+                    badgeFill.setColor(DashUi.AMBER);
+                }
                 canvas.drawRect(cursor, badgeTop, cursor + badgeW,
                         titleBaseline() + ui / 2, badgeFill);
-                drawCjk(canvas, "过载", cursor + ui / 2, titleBaseline(), ui,
+                drawCjk(canvas, badgeText, cursor + ui / 2, titleBaseline(), ui,
                         solid ? DashUi.BLACK : DashUi.WHITE);
                 cursor += badgeW + ui;
-                postInvalidateDelayed(250);
+                if (alarm) {
+                    postInvalidateDelayed(250);
+                }
             }
             if (data.cpuVoltage > 0 || data.cpuPowerW > 0) {
                 String extra = "";
@@ -143,12 +159,21 @@ public final class CpuPanelView extends PanelView {
                     labelBaseline, ui, DashUi.WHITE_30);
         }
 
-        float thresholdY = chartBottom - (chartBottom - chartTop) * (thresholdPct / 100f);
-        canvas.drawLine(left, thresholdY, chartRight, thresholdY, dashed);
-        int thresholdLabelY = Math.max(chartTop + ui, (int) thresholdY - dp(3));
-        drawDsegRight(canvas, String.format(Locale.US, "%03d", thresholdPct),
-                chartRight - ui / 2, thresholdLabelY, ui, DashUi.RED);
-        drawMonoRight(canvas, "%", chartRight, thresholdLabelY, ui / 2, DashUi.RED);
+        float cautionY = chartBottom - (chartBottom - chartTop) * (cautionPct / 100f);
+        float alarmY = chartBottom - (chartBottom - chartTop) * (alarmPct / 100f);
+        canvas.drawLine(left, cautionY, chartRight, cautionY, cautionLine);
+        canvas.drawLine(left, alarmY, chartRight, alarmY, dashed);
+
+        int alarmLabelY = Math.max(chartTop + ui, (int) alarmY - dp(3));
+        drawDsegRight(canvas, String.format(Locale.US, "%03d", alarmPct),
+                chartRight - ui / 2, alarmLabelY, ui, DashUi.RED);
+        drawMonoRight(canvas, "%", chartRight, alarmLabelY, ui / 2, DashUi.RED);
+        if (Math.abs(alarmY - cautionY) > ui * 2) {
+            int cautionLabelY = Math.max(chartTop + ui, (int) cautionY - dp(3));
+            drawDsegRight(canvas, String.format(Locale.US, "%03d", cautionPct),
+                    chartRight - ui / 2, cautionLabelY, ui, DashUi.AMBER);
+            drawMonoRight(canvas, "%", chartRight, cautionLabelY, ui / 2, DashUi.AMBER);
+        }
 
         if (count >= 2) {
             int start = HISTORY - count;
