@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="2dp">
+
+        <com.example.panel.dash.TopBarView
+            android:id="@+id/top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/left_column"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="55"
+                android:orientation="vertical">
+
+                <com.example.panel.dash.CpuPanelView
+                    android:id="@+id/cpu_panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <com.example.panel.dash.ProcessPanelView
+                    android:id="@+id/process_panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="2dp"
+                android:layout_weight="45"
+                android:orientation="vertical">
+
+                <com.example.panel.dash.RamPanelView
+                    android:id="@+id/ram_panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="20" />
+
+                <com.example.panel.dash.DiskPanelView
+                    android:id="@+id/disk_panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="22" />
+
+                <com.example.panel.dash.TempPanelView
+                    android:id="@+id/temp_panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="26" />
+
+                <com.example.panel.dash.GpuPanelView
+                    android:id="@+id/gpu_panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="32" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.example.panel.dash.SettingsOverlayView
+        android:id="@+id/settings_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+</FrameLayout>

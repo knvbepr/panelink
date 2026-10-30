@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="24dp"
+        android:background="@color/white_20" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:paddingTop="12dp"
+        android:paddingBottom="10dp">
+
+        <com.example.panel.ui.DsegTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.1"
+            android:text="01"
+            android:textColor="@color/white_60"
+            android:textSize="12sp" />
+
+        <View
+            android:layout_width="10dp"
+            android:layout_height="1dp" />
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.12"
+            android:text="BUTTONS"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TAP / NO RIPPLE" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white_50" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:paddingTop="14dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.example.panel.ui.MonoTextView
+                style="@style/Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="PRIMARY" />
+
+            <com.example.panel.ui.MonoTextView
+                style="@style/Widget.Panel.Button.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="EXECUTE" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="12dp"
+            android:layout_height="1dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.example.panel.ui.MonoTextView
+                style="@style/Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="SECONDARY" />
+
+            <com.example.panel.ui.MonoTextView
+                style="@style/Widget.Panel.Button"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="STANDBY" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:paddingTop="14dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.example.panel.ui.MonoTextView
+                style="@style/Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="DISABLED" />
+
+            <com.example.panel.ui.MonoTextView
+                style="@style/Widget.Panel.Button.Disabled"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="UNAVAILABLE" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="12dp"
+            android:layout_height="1dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.example.panel.ui.MonoTextView
+                style="@style/Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="DANGER" />
+
+            <com.example.panel.ui.MonoTextView
+                style="@style/Widget.Panel.Button.Danger"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="ABORT" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.example.panel.ui.MonoTextView
+        style="@style/Text.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="PRESSED = WHITE 8% OVERLAY / NO RIPPLE / NO ELEVATION" />
+
+</LinearLayout>

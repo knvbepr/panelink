@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="24dp"
+        android:background="@color/white_20" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:paddingTop="12dp"
+        android:paddingBottom="10dp">
+
+        <com.example.panel.ui.DsegTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.1"
+            android:text="02"
+            android:textColor="@color/white_60"
+            android:textSize="12sp" />
+
+        <View
+            android:layout_width="10dp"
+            android:layout_height="1dp" />
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.12"
+            android:text="STATUS BADGES"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OUTLINE / SOLID" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white_50" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:paddingTop="14dp">
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Widget.Panel.Badge"
+            android:layout_width="0dp"
+            android:layout_height="34dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="NORMAL" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Widget.Panel.Badge.Outline.Green"
+            android:layout_width="0dp"
+            android:layout_height="34dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="PASS" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Widget.Panel.Badge.Outline.Muted"
+            android:layout_width="0dp"
+            android:layout_height="34dp"
+            android:layout_weight="1"
+            android:text="STANDBY" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:paddingTop="8dp">
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Widget.Panel.Badge.Solid.Green"
+            android:layout_width="0dp"
+            android:layout_height="34dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="LOCKED" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Widget.Panel.Badge.Solid.Amber"
+            android:layout_width="0dp"
+            android:layout_height="34dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="CAUTION" />
+
+        <com.example.panel.ui.MonoTextView
+            android:id="@+id/badge_fault"
+            style="@style/Widget.Panel.Badge.Solid.Red"
+            android:layout_width="0dp"
+            android:layout_height="34dp"
+            android:layout_weight="1"
+            android:text="FAULT" />
+    </LinearLayout>
+
+    <com.example.panel.ui.MonoTextView
+        style="@style/Text.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="OUTLINE = NORMAL / SOLID + #000 TEXT = SPECIAL / FAULT BLINKS CONTINUOUSLY" />
+
+</LinearLayout>

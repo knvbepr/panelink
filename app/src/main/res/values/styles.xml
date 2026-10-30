@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Anchors for implicit dot-notation inheritance. -->
+    <style name="Text" parent="" />
+    <style name="Widget.Panel" parent="" />
+    <style name="Widget.Panel.Badge.Outline" parent="Widget.Panel.Badge" />
+
+    <!-- Type -->
+    <style name="Text.SectionNumber">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">@color/white_60</item>
+        <item name="android:letterSpacing">0.1</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Text.SectionTitle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:letterSpacing">0.12</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Text.Caption">
+        <item name="android:textSize">9sp</item>
+        <item name="android:textColor">@color/white_60</item>
+        <item name="android:letterSpacing">0.08</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Text.Label">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">@color/white_60</item>
+        <item name="android:letterSpacing">0.08</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Text.Body">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <!-- Buttons: 48dp target, rectangle, no ripple. -->
+    <style name="Widget.Panel.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:letterSpacing">0.1</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/bg_button_secondary</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item>
+    </style>
+
+    <style name="Widget.Panel.Button.Primary">
+        <item name="android:background">@drawable/bg_button_primary</item>
+        <item name="android:textColor">@color/ink</item>
+    </style>
+
+    <style name="Widget.Panel.Button.Danger">
+        <item name="android:background">@drawable/bg_button_danger</item>
+        <item name="android:textColor">@color/status_red</item>
+    </style>
+
+    <style name="Widget.Panel.Button.Disabled">
+        <item name="android:background">@drawable/bg_outline_white_20</item>
+        <item name="android:textColor">@color/white_30</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+    </style>
+
+    <!-- Badges: 11sp minimum, uppercase, letterSpacing >= 0.05em. -->
+    <style name="Widget.Panel.Badge">
+        <item name="android:layout_height">34dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:letterSpacing">0.08</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/bg_outline_white_50</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+    </style>
+
+    <style name="Widget.Panel.Badge.Solid">
+        <item name="android:textColor">@color/ink</item>
+    </style>
+
+    <style name="Widget.Panel.Badge.Solid.Green">
+        <item name="android:background">@drawable/bg_solid_green</item>
+    </style>
+
+    <style name="Widget.Panel.Badge.Solid.Amber">
+        <item name="android:background">@drawable/bg_solid_amber</item>
+    </style>
+
+    <style name="Widget.Panel.Badge.Solid.Red">
+        <item name="android:background">@drawable/bg_solid_red</item>
+    </style>
+
+    <style name="Widget.Panel.Badge.Outline.Green">
+        <item name="android:background">@drawable/bg_outline_green</item>
+    </style>
+
+    <style name="Widget.Panel.Badge.Outline.Muted">
+        <item name="android:background">@drawable/bg_outline_white_20</item>
+        <item name="android:textColor">@color/white_60</item>
+    </style>
+
+    <!-- Inputs: black + white stroke. Focus goes to 100%, error goes red. -->
+    <style name="Widget.Panel.Input">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@drawable/bg_input_default</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/white_60</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Widget.Panel.Input.Error">
+        <item name="android:background">@drawable/bg_input_error</item>
+    </style>
+
+    <style name="Widget.Panel.Input.FocusSpecimen">
+        <item name="android:background">@drawable/bg_input_focus</item>
+        <item name="android:focusable">false</item>
+        <item name="android:clickable">false</item>
+        <item name="android:longClickable">false</item>
+    </style>
+
+</resources>

@@ -1,0 +1,25 @@
+name: build-pc
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  workflow_dispatch:
+jobs:
+  windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Compile PC service
+        run: cl /nologo /O2 /std:c11 /D_CRT_SECURE_NO_WARNINGS /Fe:panelink_pc.exe pc\panelink_pc.c ws2_32.lib pdh.lib dxgi.lib dxguid.lib ole32.lib oleaut32.lib wbemuuid.lib powrprof.lib advapi32.lib
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: panelink-pc
+          path: panelink_pc.exe
+          if-no-files-found: warn
+      - name: Attach to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: panelink_pc.exe

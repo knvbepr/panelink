@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="24dp"
+        android:background="@color/white_20" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:paddingTop="12dp"
+        android:paddingBottom="10dp">
+
+        <com.example.panel.ui.DsegTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.1"
+            android:text="05"
+            android:textColor="@color/white_60"
+            android:textSize="12sp" />
+
+        <View
+            android:layout_width="10dp"
+            android:layout_height="1dp" />
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.12"
+            android:text="INPUTS / SWITCH"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FOCUS / ERROR" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white_50" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:paddingTop="14dp">
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.1"
+            android:text="CALLSIGN"
+            android:textColor="@color/white_60"
+            android:textSize="11sp" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DEFAULT" />
+    </LinearLayout>
+
+    <EditText
+        style="@style/Widget.Panel.Input"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="6dp"
+        android:backgroundTint="@null"
+        android:fontFamily="monospace"
+        android:inputType="textCapCharacters|textNoSuggestions"
+        android:text="PANEL-01"
+        android:textColor="@color/white"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:paddingTop="18dp">
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.1"
+            android:text="GROSS WEIGHT"
+            android:textColor="@color/white_60"
+            android:textSize="11sp" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.1"
+            android:text="ERROR"
+            android:textColor="@color/status_red"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <com.example.panel.ui.DsegEditText
+        style="@style/Widget.Panel.Input.Error"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="6dp"
+        android:backgroundTint="@null"
+        android:inputType="number"
+        android:letterSpacing="0.04"
+        android:text="128000"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+
+    <com.example.panel.ui.MonoTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:letterSpacing="0.06"
+        android:text="MAX 120000 KG / VALUE REJECTED"
+        android:textColor="@color/status_red"
+        android:textSize="10sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:paddingTop="18dp">
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.1"
+            android:text="AUTH"
+            android:textColor="@color/white_60"
+            android:textSize="11sp" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FOCUSED / SPECIMEN" />
+    </LinearLayout>
+
+    <com.example.panel.ui.MonoTextView
+        style="@style/Widget.Panel.Input.FocusSpecimen"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="6dp"
+        android:gravity="center_vertical"
+        android:letterSpacing="0.3"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:text="****"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
+    <com.example.panel.ui.MonoTextView
+        style="@style/Text.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="FOCUS = STROKE 100% / ERROR = RED STROKE + RED TEXT / NO RIPPLE" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="18dp"
+        android:background="@color/white_20" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="EXTERNAL POWER"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <com.example.panel.ui.MonoTextView
+            android:id="@+id/switch_ext_power_state"
+            style="@style/Text.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="ON" />
+
+        <com.example.panel.ui.SquareSwitch
+            android:id="@+id/switch_ext_power"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white_20" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="ARM SYSTEMS"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <com.example.panel.ui.MonoTextView
+            android:id="@+id/switch_arm_state"
+            style="@style/Text.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="OFF" />
+
+        <com.example.panel.ui.SquareSwitch
+            android:id="@+id/switch_arm"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white_20" />
+
+    <com.example.panel.ui.MonoTextView
+        style="@style/Text.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="SQUARE SWITCH / 48DP TARGET / STATE JUMPS WITH NO ANIMATION" />
+
+</LinearLayout>

@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="24dp"
+        android:background="@color/white_20" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:paddingTop="12dp"
+        android:paddingBottom="10dp">
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.12"
+            android:text="DESIGN TOKENS"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 RADIUS / 1DP" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white_50" />
+
+    <com.example.panel.ui.MonoTextView
+        style="@style/Text.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="6dp"
+        android:text="COLOR" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <View
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:background="@drawable/bg_swatch_black" />
+
+        <View
+            android:layout_width="10dp"
+            android:layout_height="1dp" />
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="76dp"
+            android:layout_height="wrap_content"
+            android:text="BLACK"
+            android:textColor="@color/white"
+            android:textSize="10sp" />
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="#000000"
+            android:textColor="@color/white_60"
+            android:textSize="10sp" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="BASE SURFACE" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <View
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:background="@drawable/bg_swatch_white" />
+
+        <View
+            android:layout_width="10dp"
+            android:layout_height="1dp" />
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="76dp"
+            android:layout_height="wrap_content"
+            android:text="WHITE"
+            android:textColor="@color/white"
+            android:textSize="10sp" />
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="#FFFFFF"
+            android:textColor="@color/white_60"
+            android:textSize="10sp" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="TEXT / HAIRLINE" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <View
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:background="@drawable/bg_swatch_green" />
+
+        <View
+            android:layout_width="10dp"
+            android:layout_height="1dp" />
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="76dp"
+            android:layout_height="wrap_content"
+            android:text="GREEN"
+            android:textColor="@color/white"
+            android:textSize="10sp" />
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="#00C853"
+            android:textColor="@color/white_60"
+            android:textSize="10sp" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="NORMAL / LOCKED" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <View
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:background="@drawable/bg_swatch_amber" />
+
+        <View
+            android:layout_width="10dp"
+            android:layout_height="1dp" />
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="76dp"
+            android:layout_height="wrap_content"
+            android:text="AMBER"
+            android:textColor="@color/white"
+            android:textSize="10sp" />
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="#FFB000"
+            android:textColor="@color/white_60"
+            android:textSize="10sp" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="CAUTION" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <View
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:background="@drawable/bg_swatch_red" />
+
+        <View
+            android:layout_width="10dp"
+            android:layout_height="1dp" />
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="76dp"
+            android:layout_height="wrap_content"
+            android:text="RED"
+            android:textColor="@color/white"
+            android:textSize="10sp" />
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="#FF1744"
+            android:textColor="@color/white_60"
+            android:textSize="10sp" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="FAULT / DANGER" />
+    </LinearLayout>
+
+    <com.example.panel.ui.MonoTextView
+        style="@style/Text.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="LINE" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingEnd="10dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white_20" />
+
+            <com.example.panel.ui.MonoTextView
+                style="@style/Text.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="1DP / 20%" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingEnd="10dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white_50" />
+
+            <com.example.panel.ui.MonoTextView
+                style="@style/Text.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="1DP / 50%" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/white" />
+
+            <com.example.panel.ui.MonoTextView
+                style="@style/Text.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="2DP / 100%" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.example.panel.ui.MonoTextView
+        style="@style/Text.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="6dp"
+        android:text="TYPE" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="58dp"
+            android:layout_height="wrap_content"
+            android:text="NUMERIC" />
+
+        <com.example.panel.ui.DsegTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:letterSpacing="0.04"
+            android:text="085"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DSEG7-CLASSIC" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white_20" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="58dp"
+            android:layout_height="wrap_content"
+            android:text="TEXT" />
+
+        <com.example.panel.ui.MonoTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="PANEL"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="JETBRAINS MONO" />
+    </LinearLayout>
+
+    <com.example.panel.ui.MonoTextView
+        style="@style/Text.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="SPACE 08 / 16 / 24 / STROKE 1DP / TOUCH 48DP / RADIUS 0DP / ELEVATION 0DP" />
+
+    <com.example.panel.ui.MonoTextView
+        style="@style/Text.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="4dp"
+        android:text="ACCEPTANCE" />
+
+    <com.example.panel.ui.MonoTextView
+        style="@style/Text.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="4dp"
+        android:text="[X] ZERO RADIUS / ZERO RIPPLE / ZERO DECORATION&#10;[X] EVERY NUMERAL IN DSEG7 / ZERO-PADDED&#10;[X] SOLID + BLACK TEXT ONLY FOR SPECIAL STATES&#10;[X] BLINK ONLY FAULT BADGE + WARNING BANNER (CONTINUOUS)&#10;[X] CHARTS STATIC / DASHED STATUS THRESHOLD&#10;[X] PALETTE = BLACK + WHITE + GREEN / AMBER / RED" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:paddingTop="10dp"
+        android:paddingBottom="28dp">
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="PANEL // UI SPECIMEN 001" />
+
+        <com.example.panel.ui.MonoTextView
+            style="@style/Text.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="END OF SHEET" />
+    </LinearLayout>
+
+</LinearLayout>

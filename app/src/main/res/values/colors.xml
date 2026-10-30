@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Surfaces -->
+    <color name="black">#FF000000</color>
+    <color name="surface_alt">#FF0A0A0A</color>
+
+    <!-- Ink / hairlines. Alpha steps are part of the design token set. -->
+    <color name="white">#FFFFFFFF</color>
+    <color name="white_80">#CCFFFFFF</color>
+    <color name="white_60">#99FFFFFF</color>
+    <color name="white_50">#80FFFFFF</color>
+    <color name="white_40">#66FFFFFF</color>
+    <color name="white_30">#4DFFFFFF</color>
+    <color name="white_20">#33FFFFFF</color>
+    <color name="white_15">#26FFFFFF</color>
+    <color name="white_08">#14FFFFFF</color>
+
+    <!-- Status only. Never decorative. -->
+    <color name="status_green">#FF00C853</color>
+    <color name="status_amber">#FFFFB000</color>
+    <color name="status_red">#FF1744</color>
+
+    <color name="ink">#FF000000</color>
+</resources>

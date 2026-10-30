@@ -1,0 +1,15 @@
+[panelink]
+; UDP discovery and TCP state port. The phone must use the same port.
+port=47823
+; PC-side sampling interval in milliseconds (100..5000).
+interval_ms=1000
+; Name shown on the phone.
+name=DESKTOP
+; Select what is sent (1=on, 0=off).
+send_cpu=1
+send_mem=1
+send_gpu=1
+send_disk=1
+send_battery=1
+send_fans=1
+send_temps=1
