@@ -531,7 +531,7 @@ public final class SettingsOverlayView extends View {
             dseg.setTextSize(valueSize);
             dseg.setColor(DashUi.WHITE);
             dseg.setTextAlign(Paint.Align.RIGHT);
-            canvas.drawText(value, rowRects[index].right - ui * 5 - ui / 2, baseline, dseg);
+            canvas.drawText(value, minusRects[index].left - ui, baseline, dseg);
             drawButton(canvas, minusRects[index], "-");
             drawButton(canvas, plusRects[index], "+");
         } else if (wholeRowAction) {

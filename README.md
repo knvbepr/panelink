@@ -14,7 +14,7 @@ service for a Windows PC.
 - Temperature warning uses amber, alarm uses red; both thresholds are adjustable in
   settings. Fault blinking is continuous and runs at a 0.5 s phase.
 - Tapping a numeric setting opens the built-in pixel keypad for direct entry; the exit
-  row opens a same-style confirmation sheet.
+  row opens a same-style confirmation sheet. Values and +/- buttons have separate columns.
 
 ## Remote protocol
 
