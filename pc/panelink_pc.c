@@ -1265,6 +1265,12 @@ static DWORD WINAPI tray_thread(LPVOID unused) {
 
 int main(void) {
     SetConsoleOutputCP(CP_UTF8);
+    HANDLE single = CreateMutexW(NULL, TRUE, L"Local\\PANELINK_PC_SERVICE");
+    if (single != NULL && GetLastError() == ERROR_ALREADY_EXISTS) {
+        MessageBoxW(NULL, L"PANELINK PC service is already running.\nUse stop_all.bat to stop it.",
+                    L"PANELINK", MB_OK | MB_ICONINFORMATION);
+        return 0;
+    }
     g_instance = GetModuleHandleA(NULL);
     read_config();
     WSADATA wsa;
