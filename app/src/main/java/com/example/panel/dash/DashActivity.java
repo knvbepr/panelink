@@ -74,6 +74,7 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
             requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, 7);
         }
 
+        tempPanel.setThresholds(settings.tempWarnC, settings.tempFaultC);
         settingsOverlay.setSettings(settings, this);
         settingsOverlay.setVisibility(View.GONE);
         settingsOverlay.setRemoteStatus(remoteStatus);
