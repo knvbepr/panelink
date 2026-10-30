@@ -1167,11 +1167,11 @@ static void show_tray_menu(HWND hwnd) {
                 IDM_INT_5000, L"5.0 秒");
     AppendMenuW(menu, MF_POPUP, (UINT_PTR) interval, L"刷新间隔");
 
-    char portLabel[64];
-    snprintf(portLabel, sizeof(portLabel), "端口 %d（在 INI 修改）", g_port);
+    wchar_t portLabel[64];
+    swprintf(portLabel, 64, L"端口 %d（在 INI 修改）", g_port);
     AppendMenuW(menu, MF_STRING | MF_GRAYED, 0, L" ");
     AppendMenuW(menu, MF_SEPARATOR, 0, NULL);
-    AppendMenuA(menu, MF_STRING | MF_GRAYED, 0, portLabel);
+    AppendMenuW(menu, MF_STRING | MF_GRAYED, 0, portLabel);
     AppendMenuW(menu, MF_STRING, IDM_CONFIG, L"打开配置文件");
     AppendMenuW(menu, MF_STRING, IDM_ABOUT, L"关于 PANELINK");
 
