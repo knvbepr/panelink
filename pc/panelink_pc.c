@@ -67,6 +67,15 @@ typedef struct {
 } CpuTicks;
 
 typedef struct {
+    ULONG Number;
+    ULONG MaxMhz;
+    ULONG CurrentMhz;
+    ULONG MhzLimit;
+    ULONG MaxIdleState;
+    ULONG CurrentIdleState;
+} ProcessorPowerInfo;
+
+typedef struct {
     char name[32];
     char letter;
     unsigned long long total;
@@ -241,13 +250,11 @@ static void sample_cpu(void) {
     }
     g_cpu_total = (float) (usage_sum / g_core_count);
 
-    PROCESSOR_POWER_INFORMATION *ppi =
-            (PROCESSOR_POWER_INFORMATION *) calloc(g_core_count, sizeof(PROCESSOR_POWER_INFORMATION));
+    ProcessorPowerInfo *ppi =
+            (ProcessorPowerInfo *) calloc(g_core_count, sizeof(ProcessorPowerInfo));
     if (ppi) {
-        ULONG out = 0;
         if (CallNtPowerInformation(PROCESSOR_INFORMATION_CLASS, NULL, 0, ppi,
-                                   (ULONG) (g_core_count * sizeof(PROCESSOR_POWER_INFORMATION)),
-                                   &out) == 0) {
+                                   (ULONG) (g_core_count * sizeof(ProcessorPowerInfo))) == 0) {
             for (int i = 0; i < g_core_count; i++) {
                 g_freq_mhz[i] = (int) ppi[i].CurrentMhz;
             }
