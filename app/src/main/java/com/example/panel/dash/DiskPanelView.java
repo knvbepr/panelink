@@ -74,15 +74,33 @@ public final class DiskPanelView extends PanelView {
         int top = titleBaseline() + ui / 2 + ui / 4;
         int bottom = getHeight() - pad;
         int count = Math.min(3, data.disks.size());
-        int rowH = Math.max(ui + 8, (bottom - top) / count);
+        int rowH = Math.max(ui + ui / 2, (bottom - top) / count);
+        int infoSize = ui * 3 / 4;
         for (int i = 0; i < count; i++) {
             PanelData.RemoteDisk disk = data.disks.get(i);
             int y = top + i * rowH;
+            int baseline = y + ui;
             long pct = disk.totalBytes > 0 ? disk.usedBytes * 100 / disk.totalBytes : 0;
-            drawMono(canvas, disk.name, left, y + ui, ui, DashUi.WHITE);
-            drawDsegRight(canvas, DashUi.percent(pct), right, y + ui, ui,
+            drawMono(canvas, disk.name, left, baseline, ui, DashUi.WHITE);
+            drawDsegRight(canvas, DashUi.percent(pct), right, baseline, ui,
                     pct >= 95 ? DashUi.RED : pct >= 85 ? DashUi.AMBER : DashUi.WHITE_60);
-            drawMonoRight(canvas, "%", right, y + ui, ui / 2, DashUi.WHITE_60);
+            drawMonoRight(canvas, "%", right, baseline, infoSize, DashUi.WHITE_60);
+
+            int x = left + ui * 2;
+            int percentLeft = right - ui * 3;
+            drawMono(canvas, "R", x, baseline, infoSize, DashUi.WHITE_30);
+            x += (int) mono.measureText("R") + 2;
+            String read = DashUi.rate(disk.readBps);
+            drawDseg(canvas, read, x, baseline, infoSize, DashUi.WHITE_60);
+            x += (int) dseg.measureText(read) + 2;
+            drawMono(canvas, "/s", x, baseline, infoSize, DashUi.WHITE_30);
+            x += (int) mono.measureText("/s") + ui / 2;
+            drawMono(canvas, "W", x, baseline, infoSize, DashUi.WHITE_30);
+            x += (int) mono.measureText("W") + 2;
+            String write = DashUi.rate(disk.writeBps);
+            drawDseg(canvas, write, x, baseline, infoSize, DashUi.WHITE_60);
+            x += (int) dseg.measureText(write) + 2;
+            drawMono(canvas, "/s", x, baseline, infoSize, DashUi.WHITE_30);
 
             int barTop = y + ui + ui / 4;
             int barBottom = barTop + Math.max(2, ui / 8);
@@ -91,24 +109,6 @@ public final class DiskPanelView extends PanelView {
             fill.setColor(pct >= 95 ? DashUi.RED : pct >= 85 ? DashUi.AMBER : DashUi.WHITE);
             canvas.drawRect(left + 1, barTop + 1, left + 1 + (right - left - 2) * pct / 100f,
                     barBottom - 1, fill);
-
-            int infoBaseline = barBottom + ui / 2 + 2;
-            if (infoBaseline < y + rowH) {
-                int x = left;
-                drawMono(canvas, "R", x, infoBaseline, ui / 2 + ui / 3, DashUi.WHITE_30);
-                x += (int) mono.measureText("R") + 2;
-                String read = DashUi.rate(disk.readBps);
-                drawDseg(canvas, read, x, infoBaseline, ui / 2 + ui / 3, DashUi.WHITE_60);
-                x += (int) dseg.measureText(read) + 2;
-                drawMono(canvas, "/s", x, infoBaseline, ui / 2 + ui / 3, DashUi.WHITE_30);
-                x += (int) mono.measureText("/s") + ui / 2;
-                drawMono(canvas, "W", x, infoBaseline, ui / 2 + ui / 3, DashUi.WHITE_30);
-                x += (int) mono.measureText("W") + 2;
-                String write = DashUi.rate(disk.writeBps);
-                drawDseg(canvas, write, x, infoBaseline, ui / 2 + ui / 3, DashUi.WHITE_60);
-                x += (int) dseg.measureText(write) + 2;
-                drawMono(canvas, "/s", x, infoBaseline, ui / 2 + ui / 3, DashUi.WHITE_30);
-            }
         }
     }
 

@@ -45,6 +45,7 @@ public final class SettingsOverlayView extends View {
     private final Rect[] rowRects = new Rect[ROWS];
     private final Rect[] minusRects = new Rect[ROWS];
     private final Rect[] plusRects = new Rect[ROWS];
+    private final Rect backRect = new Rect();
 
     private int rowH;
     private int labelSize;
@@ -144,6 +145,14 @@ public final class SettingsOverlayView extends View {
             p.setColor(DashUi.WHITE_15);
             canvas.drawLine(left, top + rowH, right, top + rowH, p);
         }
+
+        int backW = Math.min(w / 4, ui * 9);
+        backRect.set(ui, h - ui * 3, ui + backW, h - ui / 2);
+        p.setStyle(Paint.Style.STROKE);
+        p.setColor(DashUi.WHITE_50);
+        canvas.drawRect(backRect, p);
+        drawCjk(canvas, "返回", backRect.left + ui / 2,
+                backRect.centerY() + labelSize / 3, labelSize, DashUi.WHITE);
     }
 
     private void layoutRow(int index, int left, int right, int y) {
@@ -274,6 +283,12 @@ public final class SettingsOverlayView extends View {
         }
         int x = (int) event.getX();
         int y = (int) event.getY();
+        if (backRect.contains(x, y)) {
+            if (listener != null) {
+                listener.onClosed();
+            }
+            return true;
+        }
         for (int i = 0; i < ROWS; i++) {
             if (!rowRects[i].contains(x, y)) {
                 continue;

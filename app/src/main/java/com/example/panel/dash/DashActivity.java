@@ -46,6 +46,16 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
         super.onCreate(savedInstanceState);
         settings = new DashSettings();
         settings.load(this);
+        String debugHost = getIntent().getStringExtra("remote_host");
+        if (debugHost != null && !debugHost.isEmpty()) {
+            settings.remoteHost = debugHost;
+            settings.remoteMode = true;
+            int debugPort = getIntent().getIntExtra("remote_port", 0);
+            if (debugPort > 0) {
+                settings.remotePort = debugPort;
+            }
+            settings.save(this);
+        }
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().setStatusBarColor(Color.BLACK);

@@ -142,6 +142,8 @@ static FanInfo g_fans[8];
 static int g_fan_count;
 static TempInfo g_temps[8];
 static int g_temp_count;
+static int g_acpi_temp_count;
+static int g_acpi_fan_count;
 static DWORD g_last_wmi_ms;
 
 static const char *json_escape(const char *src, char *dst, size_t cap) {
@@ -286,18 +288,13 @@ static double find_disk_counter(PDH_HCOUNTER counter, char letter) {
             if (items[i].szName) {
                 char name[128];
                 WideCharToMultiByte(CP_ACP, 0, items[i].szName, -1, name, sizeof(name), NULL, NULL);
-                if (strchr(name, letter) && strchr(name, ':')) {
-                    result = items[i].FmtValue.doubleValue;
-                    break;
+                for (char *q = name; q[0]; q++) {
+                    if (q[0] == letter && q[1] == ':') {
+                        result = items[i].FmtValue.doubleValue;
+                        break;
+                    }
                 }
-            }
-        }
-        if (result == 0) {
-            for (DWORD i = 0; i < count; i++) {
-                if (items[i].szName && wcsstr(items[i].szName, L"_Total")) {
-                    result = items[i].FmtValue.doubleValue;
-                    break;
-                }
+                if (result > 0) break;
             }
         }
     }
@@ -420,7 +417,9 @@ static void sample_dxgi_extra(void) {
         if (factory->lpVtbl->EnumAdapters1(factory, i, &adapter) != S_OK) break;
         DXGI_ADAPTER_DESC1 desc;
         if (adapter->lpVtbl->GetDesc1(adapter, &desc) == S_OK) {
-            if (desc.VendorId != 0x10DE) {
+            if ((desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) == 0
+                && wcsstr(desc.Description, L"Basic Render") == NULL
+                && desc.VendorId != 0x10DE) {
                 GpuInfo *gpu = &g_gpus[g_gpu_count++];
                 memset(gpu, 0, sizeof(*gpu));
                 gpu->load = -1;
@@ -557,6 +556,8 @@ static void sample_wmi(void) {
         locator->lpVtbl->Release(locator);
     }
     if (did_init) CoUninitialize();
+    g_acpi_temp_count = g_temp_count;
+    g_acpi_fan_count = g_fan_count;
 }
 
 static void sample_battery(void) {
@@ -571,6 +572,8 @@ static void sample_battery(void) {
 }
 
 static void fill_extra_sensors(void) {
+    g_temp_count = g_acpi_temp_count;
+    g_fan_count = g_acpi_fan_count;
     for (int i = 0; i < g_gpu_count && g_temp_count < 8; i++) {
         if (g_gpus[i].temp_c > 0) {
             TempInfo *t = &g_temps[g_temp_count++];

@@ -89,7 +89,7 @@ public final class CpuPanelView extends PanelView {
         int chartRight = getWidth() - pad;
         int cores = data == null ? 0 : data.cpuFreqMhz.length;
         int cols = 4;
-        int freqRows = Math.max(1, (Math.max(1, cores) + cols - 1) / cols);
+        int freqRows = Math.min(2, Math.max(1, (Math.max(1, cores) + cols - 1) / cols));
         int freqRowH = ui + ui / 2;
         int chartTop = titleBaseline() + ui / 2 + dp(6) + ui / 2;
         int chartBottom = getHeight() - pad - freqRows * freqRowH;
@@ -130,7 +130,8 @@ public final class CpuPanelView extends PanelView {
         // One cell per core, four per row, so values cannot collide.
         if (data != null && data.cpuFreqMhz.length > 0) {
             int cellW = (chartRight - left) / cols;
-            for (int i = 0; i < data.cpuFreqMhz.length; i++) {
+            int shownFreq = Math.min(data.cpuFreqMhz.length, cols * freqRows);
+            for (int i = 0; i < shownFreq; i++) {
                 int row = i / cols;
                 int col = i % cols;
                 int baseline = getHeight() - pad - (freqRows - 1 - row) * freqRowH;
@@ -142,6 +143,10 @@ public final class CpuPanelView extends PanelView {
                 drawDseg(canvas, value, fx, baseline, ui, DashUi.WHITE_60);
                 fx += (int) dseg.measureText(value) + 1;
                 drawMono(canvas, "M", fx, baseline, ui / 2 + ui / 3, DashUi.WHITE_30);
+            }
+            if (data.cpuFreqMhz.length > shownFreq) {
+                drawMonoRight(canvas, "+" + (data.cpuFreqMhz.length - shownFreq),
+                        chartRight, getHeight() - pad, ui / 2 + ui / 3, DashUi.WHITE_30);
             }
         }
     }
