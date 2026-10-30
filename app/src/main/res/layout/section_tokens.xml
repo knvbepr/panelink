@@ -19,7 +19,7 @@
         android:paddingTop="12dp"
         android:paddingBottom="10dp">
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:letterSpacing="0.12"
@@ -32,7 +32,7 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
         android:layout_height="1dp"
         android:background="@color/white_50" />
 
-    <com.example.panel.ui.MonoTextView
+    <com.knvbepr.panelink.ui.MonoTextView
         style="@style/Text.Caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -68,21 +68,21 @@
             android:layout_width="10dp"
             android:layout_height="1dp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="76dp"
             android:layout_height="wrap_content"
             android:text="BLACK"
             android:textColor="@color/white"
             android:textSize="10sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="#000000"
             android:textColor="@color/white_60"
             android:textSize="10sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -107,21 +107,21 @@
             android:layout_width="10dp"
             android:layout_height="1dp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="76dp"
             android:layout_height="wrap_content"
             android:text="WHITE"
             android:textColor="@color/white"
             android:textSize="10sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="#FFFFFF"
             android:textColor="@color/white_60"
             android:textSize="10sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -146,21 +146,21 @@
             android:layout_width="10dp"
             android:layout_height="1dp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="76dp"
             android:layout_height="wrap_content"
             android:text="GREEN"
             android:textColor="@color/white"
             android:textSize="10sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="#00C853"
             android:textColor="@color/white_60"
             android:textSize="10sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -185,21 +185,21 @@
             android:layout_width="10dp"
             android:layout_height="1dp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="76dp"
             android:layout_height="wrap_content"
             android:text="AMBER"
             android:textColor="@color/white"
             android:textSize="10sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="#FFB000"
             android:textColor="@color/white_60"
             android:textSize="10sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -224,21 +224,21 @@
             android:layout_width="10dp"
             android:layout_height="1dp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="76dp"
             android:layout_height="wrap_content"
             android:text="RED"
             android:textColor="@color/white"
             android:textSize="10sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="#FF1744"
             android:textColor="@color/white_60"
             android:textSize="10sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -247,7 +247,7 @@
             android:text="FAULT / DANGER" />
     </LinearLayout>
 
-    <com.example.panel.ui.MonoTextView
+    <com.knvbepr.panelink.ui.MonoTextView
         style="@style/Text.Caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -273,7 +273,7 @@
                 android:layout_height="1dp"
                 android:background="@color/white_20" />
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Text.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -293,7 +293,7 @@
                 android:layout_height="1dp"
                 android:background="@color/white_50" />
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Text.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -312,7 +312,7 @@
                 android:layout_height="2dp"
                 android:background="@color/white" />
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Text.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -321,7 +321,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <com.example.panel.ui.MonoTextView
+    <com.knvbepr.panelink.ui.MonoTextView
         style="@style/Text.Caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -336,13 +336,13 @@
         android:orientation="horizontal"
         android:baselineAligned="false">
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="58dp"
             android:layout_height="wrap_content"
             android:text="NUMERIC" />
 
-        <com.example.panel.ui.DsegTextView
+        <com.knvbepr.panelink.ui.DsegTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -351,7 +351,7 @@
             android:textColor="@color/white"
             android:textSize="22sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -370,13 +370,13 @@
         android:orientation="horizontal"
         android:baselineAligned="false">
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="58dp"
             android:layout_height="wrap_content"
             android:text="TEXT" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -384,21 +384,21 @@
             android:textColor="@color/white"
             android:textSize="12sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="JETBRAINS MONO" />
     </LinearLayout>
 
-    <com.example.panel.ui.MonoTextView
+    <com.knvbepr.panelink.ui.MonoTextView
         style="@style/Text.Caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="SPACE 08 / 16 / 24 / STROKE 1DP / TOUCH 48DP / RADIUS 0DP / ELEVATION 0DP" />
 
-    <com.example.panel.ui.MonoTextView
+    <com.knvbepr.panelink.ui.MonoTextView
         style="@style/Text.Caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -406,7 +406,7 @@
         android:layout_marginBottom="4dp"
         android:text="ACCEPTANCE" />
 
-    <com.example.panel.ui.MonoTextView
+    <com.knvbepr.panelink.ui.MonoTextView
         style="@style/Text.Caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -427,14 +427,14 @@
         android:paddingTop="10dp"
         android:paddingBottom="28dp">
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="PANEL // UI SPECIMEN 001" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

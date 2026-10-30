@@ -26,7 +26,7 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp">
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:letterSpacing="0.2"
@@ -39,13 +39,13 @@
                 android:layout_height="1dp"
                 android:layout_weight="1" />
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Text.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="HMI SPECIMEN / 001" />
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 android:id="@+id/lang_toggle"
                 style="@style/Widget.Panel.Badge"
                 android:layout_width="52dp"
@@ -70,7 +70,7 @@
         android:baselineAligned="false"
             android:paddingBottom="12dp">
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Text.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                 android:layout_height="1dp"
                 android:layout_weight="1" />
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Text.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

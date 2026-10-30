@@ -19,7 +19,7 @@
         android:paddingTop="12dp"
         android:paddingBottom="10dp">
 
-        <com.example.panel.ui.DsegTextView
+        <com.knvbepr.panelink.ui.DsegTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:letterSpacing="0.1"
@@ -31,7 +31,7 @@
             android:layout_width="10dp"
             android:layout_height="1dp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:letterSpacing="0.12"
@@ -44,7 +44,7 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,14 +69,14 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Text.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="6dp"
                 android:text="PRIMARY" />
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Widget.Panel.Button.Primary"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
@@ -93,14 +93,14 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Text.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="6dp"
                 android:text="SECONDARY" />
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Widget.Panel.Button"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
@@ -121,14 +121,14 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Text.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="6dp"
                 android:text="DISABLED" />
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Widget.Panel.Button.Disabled"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
@@ -145,14 +145,14 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Text.Label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="6dp"
                 android:text="DANGER" />
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Widget.Panel.Button.Danger"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
@@ -160,7 +160,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <com.example.panel.ui.MonoTextView
+    <com.knvbepr.panelink.ui.MonoTextView
         style="@style/Text.Caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

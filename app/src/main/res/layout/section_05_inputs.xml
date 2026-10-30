@@ -19,7 +19,7 @@
         android:paddingTop="12dp"
         android:paddingBottom="10dp">
 
-        <com.example.panel.ui.DsegTextView
+        <com.knvbepr.panelink.ui.DsegTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:letterSpacing="0.1"
@@ -31,7 +31,7 @@
             android:layout_width="10dp"
             android:layout_height="1dp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:letterSpacing="0.12"
@@ -44,7 +44,7 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
         android:baselineAligned="false"
         android:paddingTop="14dp">
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:letterSpacing="0.1"
@@ -77,7 +77,7 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
         android:baselineAligned="false"
         android:paddingTop="18dp">
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:letterSpacing="0.1"
@@ -117,7 +117,7 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:letterSpacing="0.1"
@@ -126,7 +126,7 @@
             android:textSize="10sp" />
     </LinearLayout>
 
-    <com.example.panel.ui.DsegEditText
+    <com.knvbepr.panelink.ui.DsegEditText
         style="@style/Widget.Panel.Input.Error"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -138,7 +138,7 @@
         android:textColor="@color/white"
         android:textSize="20sp" />
 
-    <com.example.panel.ui.MonoTextView
+    <com.knvbepr.panelink.ui.MonoTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
@@ -155,7 +155,7 @@
         android:baselineAligned="false"
         android:paddingTop="18dp">
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:letterSpacing="0.1"
@@ -168,14 +168,14 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="FOCUSED / SPECIMEN" />
     </LinearLayout>
 
-    <com.example.panel.ui.MonoTextView
+    <com.knvbepr.panelink.ui.MonoTextView
         style="@style/Widget.Panel.Input.FocusSpecimen"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -188,7 +188,7 @@
         android:textColor="@color/white"
         android:textSize="16sp" />
 
-    <com.example.panel.ui.MonoTextView
+    <com.knvbepr.panelink.ui.MonoTextView
         style="@style/Text.Caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -208,7 +208,7 @@
         android:orientation="horizontal"
         android:baselineAligned="false">
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -216,7 +216,7 @@
             android:textColor="@color/white"
             android:textSize="12sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:id="@+id/switch_ext_power_state"
             style="@style/Text.Caption"
             android:layout_width="wrap_content"
@@ -224,7 +224,7 @@
             android:layout_marginEnd="10dp"
             android:text="ON" />
 
-        <com.example.panel.ui.SquareSwitch
+        <com.knvbepr.panelink.ui.SquareSwitch
             android:id="@+id/switch_ext_power"
             android:layout_width="48dp"
             android:layout_height="48dp" />
@@ -242,7 +242,7 @@
         android:orientation="horizontal"
         android:baselineAligned="false">
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -250,7 +250,7 @@
             android:textColor="@color/white"
             android:textSize="12sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:id="@+id/switch_arm_state"
             style="@style/Text.Caption"
             android:layout_width="wrap_content"
@@ -258,7 +258,7 @@
             android:layout_marginEnd="10dp"
             android:text="OFF" />
 
-        <com.example.panel.ui.SquareSwitch
+        <com.knvbepr.panelink.ui.SquareSwitch
             android:id="@+id/switch_arm"
             android:layout_width="48dp"
             android:layout_height="48dp" />
@@ -269,7 +269,7 @@
         android:layout_height="1dp"
         android:background="@color/white_20" />
 
-    <com.example.panel.ui.MonoTextView
+    <com.knvbepr.panelink.ui.MonoTextView
         style="@style/Text.Caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

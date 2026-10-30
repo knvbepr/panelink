@@ -10,7 +10,7 @@ $env:JAVA_HOME='C:\Program Files\Android\Android Studio\jbr'
 $env:Path="$env:JAVA_HOME\bin;$env:Path"
 .\gradlew.bat :app:assembleDebug
 adb install -r app\build\outputs\apk\debug\app-debug.apk
-adb shell am start -n com.example.panel/.dash.DashActivity
+adb shell am start -n com.knvbepr.panelink/.dash.DashActivity
 ```
 
 - 测试机：OPPO A33 / Android 5.1.1（API 22）/ 540×960 / 240dpi，横屏逻辑分辨率 960×540。

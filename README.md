@@ -32,7 +32,7 @@ set JAVA_HOME=C:\Program Files\Android\Android Studio\jbr
 gradlew.bat :app:assembleDebug
 ```
 
-The launcher is `com.example.panel.dash.DashActivity`; the UI specimen/demo remains in the
+The launcher is `com.knvbepr.panelink.dash.DashActivity`; the UI specimen/demo remains in the
 source tree but is not the launcher. The panel is installed and verified on Android 5.1.1
 (960x540, rooted) and Android 13 (2480x1116, unrooted).
 

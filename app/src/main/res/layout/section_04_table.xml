@@ -19,7 +19,7 @@
         android:paddingTop="12dp"
         android:paddingBottom="10dp">
 
-        <com.example.panel.ui.DsegTextView
+        <com.knvbepr.panelink.ui.DsegTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:letterSpacing="0.1"
@@ -31,7 +31,7 @@
             android:layout_width="10dp"
             android:layout_height="1dp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:letterSpacing="0.12"
@@ -44,7 +44,7 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,14 +64,14 @@
         android:paddingTop="10dp"
         android:paddingBottom="8dp">
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.15"
             android:text="SYSTEM" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
             android:gravity="end"
             android:text="READING" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
             android:paddingStart="10dp"
             android:text="UNIT" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
         android:orientation="horizontal"
         android:baselineAligned="false">
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.15"
@@ -116,7 +116,7 @@
             android:textColor="@color/white"
             android:textSize="12sp" />
 
-        <com.example.panel.ui.DsegTextView
+        <com.knvbepr.panelink.ui.DsegTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
@@ -125,7 +125,7 @@
             android:textColor="@color/white"
             android:textSize="17sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -141,7 +141,7 @@
             android:orientation="horizontal"
         android:baselineAligned="false">
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Widget.Panel.Badge.Outline.Green"
                 android:layout_width="wrap_content"
                 android:layout_height="26dp"
@@ -164,7 +164,7 @@
         android:orientation="horizontal"
         android:baselineAligned="false">
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.15"
@@ -172,7 +172,7 @@
             android:textColor="@color/white"
             android:textSize="12sp" />
 
-        <com.example.panel.ui.DsegTextView
+        <com.knvbepr.panelink.ui.DsegTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
@@ -181,7 +181,7 @@
             android:textColor="@color/white"
             android:textSize="17sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -197,7 +197,7 @@
             android:orientation="horizontal"
         android:baselineAligned="false">
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Widget.Panel.Badge.Outline.Muted"
                 android:layout_width="wrap_content"
                 android:layout_height="26dp"
@@ -220,7 +220,7 @@
         android:orientation="horizontal"
         android:baselineAligned="false">
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.15"
@@ -228,7 +228,7 @@
             android:textColor="@color/white"
             android:textSize="12sp" />
 
-        <com.example.panel.ui.DsegTextView
+        <com.knvbepr.panelink.ui.DsegTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
@@ -237,7 +237,7 @@
             android:textColor="@color/white"
             android:textSize="17sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -253,7 +253,7 @@
             android:orientation="horizontal"
         android:baselineAligned="false">
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Widget.Panel.Badge.Solid.Amber"
                 android:layout_width="wrap_content"
                 android:layout_height="26dp"
@@ -276,7 +276,7 @@
         android:orientation="horizontal"
         android:baselineAligned="false">
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.15"
@@ -284,7 +284,7 @@
             android:textColor="@color/white"
             android:textSize="12sp" />
 
-        <com.example.panel.ui.DsegTextView
+        <com.knvbepr.panelink.ui.DsegTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
@@ -293,7 +293,7 @@
             android:textColor="@color/white"
             android:textSize="17sp" />
 
-        <com.example.panel.ui.MonoTextView
+        <com.knvbepr.panelink.ui.MonoTextView
             style="@style/Text.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -309,7 +309,7 @@
             android:orientation="horizontal"
         android:baselineAligned="false">
 
-            <com.example.panel.ui.MonoTextView
+            <com.knvbepr.panelink.ui.MonoTextView
                 style="@style/Widget.Panel.Badge"
                 android:layout_width="wrap_content"
                 android:layout_height="26dp"
@@ -325,7 +325,7 @@
         android:layout_height="1dp"
         android:background="@color/white_20" />
 
-    <com.example.panel.ui.MonoTextView
+    <com.knvbepr.panelink.ui.MonoTextView
         style="@style/Text.Caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

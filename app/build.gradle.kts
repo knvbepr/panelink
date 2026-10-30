@@ -3,13 +3,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.panel"
+    namespace = "com.knvbepr.panelink"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.example.panel"
+        applicationId = "com.knvbepr.panelink"
         minSdk = 21
         //noinspection ExpiredTargetSdkVersion
         targetSdk = 21
