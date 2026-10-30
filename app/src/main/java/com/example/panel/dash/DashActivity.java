@@ -65,6 +65,10 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
             if (debugFault > 0) {
                 settings.tempFaultC = debugFault;
             }
+            int debugCpuWarn = getIntent().getIntExtra("cpu_warn", -1);
+            if (debugCpuWarn > 0) {
+                settings.cpuWarnPct = debugCpuWarn;
+            }
             settings.save(this);
         }
 
@@ -83,6 +87,7 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
         }
 
         tempPanel.setThresholds(settings.tempWarnC, settings.tempFaultC);
+        cpuPanel.setThreshold(settings.cpuWarnPct);
         settingsOverlay.setSettings(settings, this);
         settingsOverlay.setVisibility(View.GONE);
         settingsOverlay.setRemoteStatus(remoteStatus);
@@ -239,12 +244,17 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
         tempPanel.setData(data);
         gpuPanel.setData(data);
         processPanel.setData(data);
+        updateProcessHeight(data);
         settingsOverlay.setBattery(localData.batteryPct, localData.charging,
                 localData.batteryCurrentMa);
         settingsOverlay.setRemoteStatus(remoteStatus);
     }
 
     private void updateProcessHeight() {
+        updateProcessHeight(localData);
+    }
+
+    private void updateProcessHeight(PanelData data) {
         if (leftColumn == null || processPanel == null) {
             return;
         }
@@ -252,7 +262,12 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
         if (available <= 0) {
             return;
         }
-        int desired = processPanel.desiredHeight(settings.procRows);
+        int rows = settings.procRows;
+        if (data != null && data.remoteMode) {
+            rows = 3 + data.fans.size() + (data.pcBatteryPresent ? 1 : 0);
+            rows = Math.max(3, Math.min(6, rows));
+        }
+        int desired = processPanel.desiredHeight(rows);
         int max = available * 55 / 100;
         int min = available * 25 / 100;
         int safety = available - available * 40 / 100;
@@ -364,6 +379,7 @@ public final class DashActivity extends AppCompatActivity implements SettingsOve
 
         settingsOverlay.setRemoteStatus(remoteStatus);
         tempPanel.setThresholds(settings.tempWarnC, settings.tempFaultC);
+        cpuPanel.setThreshold(settings.cpuWarnPct);
         updateProcessHeight();
         applyFullscreen();
         if (poller != null) {

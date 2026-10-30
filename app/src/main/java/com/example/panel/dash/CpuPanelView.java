@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -13,7 +14,7 @@ import java.util.Locale;
 public final class CpuPanelView extends PanelView {
 
     private static final int HISTORY = 60;
-    private static final float THRESHOLD = 80f;
+    private int thresholdPct = 80;
 
     private final float[] totalHistory = new float[HISTORY];
     private final float[][] coreHistory = new float[8][HISTORY];
@@ -25,6 +26,7 @@ public final class CpuPanelView extends PanelView {
     private final Paint grid = new Paint();
     private final Paint line = new Paint();
     private final Paint dashed = new Paint();
+    private final Paint badgeFill = new Paint();
 
     public CpuPanelView(Context context) {
         this(context, null);
@@ -42,6 +44,12 @@ public final class CpuPanelView extends PanelView {
         dashed.setStrokeWidth(1);
         dashed.setColor(DashUi.RED);
         dashed.setPathEffect(new DashPathEffect(new float[]{dp(6), dp(4)}, 0));
+        badgeFill.setAntiAlias(false);
+    }
+
+    public void setThreshold(int pct) {
+        thresholdPct = Math.max(40, Math.min(99, pct));
+        invalidate();
     }
 
     public void setData(PanelData data) {
@@ -79,10 +87,24 @@ public final class CpuPanelView extends PanelView {
                     DashUi.WHITE_60);
             drawDsegRight(canvas, DashUi.percent(data.cpuTotal), right - ui,
                     titleBaseline() + ui / 2 + dp(2), ui * 2,
-                    data.cpuTotal >= THRESHOLD ? DashUi.RED : DashUi.WHITE);
+                    data.cpuTotal >= thresholdPct ? DashUi.RED : DashUi.WHITE);
             String mode = perCore ? "分核" : "总占用";
             int hintX = pad + (int) cjk.measureText("CPU") + ui;
             drawCjk(canvas, mode, hintX, titleBaseline(), ui, DashUi.WHITE_60);
+            int cursor = hintX + (int) cjk.measureText(mode) + ui;
+            if (data.cpuTotal >= thresholdPct) {
+                boolean solid = (SystemClock.uptimeMillis() / 500) % 2 == 0;
+                int badgeW = (int) cjk.measureText("过载") + ui;
+                int badgeH = ui + ui / 2;
+                int badgeTop = titleBaseline() - badgeH + ui / 2;
+                badgeFill.setColor(solid ? DashUi.RED : 0x55FF1744);
+                canvas.drawRect(cursor, badgeTop, cursor + badgeW,
+                        titleBaseline() + ui / 2, badgeFill);
+                drawCjk(canvas, "过载", cursor + ui / 2, titleBaseline(), ui,
+                        solid ? DashUi.BLACK : DashUi.WHITE);
+                cursor += badgeW + ui;
+                postInvalidateDelayed(250);
+            }
             if (data.cpuVoltage > 0 || data.cpuPowerW > 0) {
                 String extra = "";
                 if (data.cpuVoltage > 0) {
@@ -92,8 +114,8 @@ public final class CpuPanelView extends PanelView {
                     extra += (extra.isEmpty() ? "" : " ")
                             + String.format(Locale.US, "%.1fW", data.cpuPowerW);
                 }
-                drawMono(canvas, extra, hintX + (int) cjk.measureText(mode) + ui,
-                        titleBaseline(), ui / 2 + ui / 3, DashUi.WHITE_60);
+                drawMono(canvas, extra, cursor, titleBaseline(),
+                        ui / 2 + ui / 3, DashUi.WHITE_60);
             }
         }
 
@@ -121,10 +143,11 @@ public final class CpuPanelView extends PanelView {
                     labelBaseline, ui, DashUi.WHITE_30);
         }
 
-        float thresholdY = chartBottom - (chartBottom - chartTop) * (THRESHOLD / 100f);
+        float thresholdY = chartBottom - (chartBottom - chartTop) * (thresholdPct / 100f);
         canvas.drawLine(left, thresholdY, chartRight, thresholdY, dashed);
         int thresholdLabelY = Math.max(chartTop + ui, (int) thresholdY - dp(3));
-        drawDsegRight(canvas, "080", chartRight - ui / 2, thresholdLabelY, ui, DashUi.RED);
+        drawDsegRight(canvas, String.format(Locale.US, "%03d", thresholdPct),
+                chartRight - ui / 2, thresholdLabelY, ui, DashUi.RED);
         drawMonoRight(canvas, "%", chartRight, thresholdLabelY, ui / 2, DashUi.RED);
 
         if (count >= 2) {

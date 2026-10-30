@@ -13,7 +13,7 @@ import java.util.Locale;
 /** Two-column settings sheet with wide rows and large +/- targets. */
 public final class SettingsOverlayView extends View {
 
-    private static final String VERSION = "1.5.0";
+    private static final String VERSION = "1.5.1";
 
     public interface Listener {
         void onSettingsChanged();
@@ -34,13 +34,14 @@ public final class SettingsOverlayView extends View {
     private static final int ROW_INTERVAL = 4;
     private static final int ROW_ROWS = 5;
     private static final int ROW_TEMP_WARN = 6;
-    private static final int ROW_BATT_SCALE = 7;
-    private static final int ROW_BATT_OFFSET = 8;
-    private static final int ROW_TEMP_OFFSET = 9;
-    private static final int ROW_TEMP_FAULT = 10;
-    private static final int ROW_RESET = 11;
-    private static final int ROW_CLOSE = 12;
-    private static final int ROWS = 13;
+    private static final int ROW_CPU_WARN = 7;
+    private static final int ROW_BATT_SCALE = 8;
+    private static final int ROW_BATT_OFFSET = 9;
+    private static final int ROW_TEMP_OFFSET = 10;
+    private static final int ROW_TEMP_FAULT = 11;
+    private static final int ROW_RESET = 12;
+    private static final int ROW_CLOSE = 13;
+    private static final int ROWS = 14;
     private static final int COLS = 2;
     private static final int PER_COL = 7;
 
@@ -341,6 +342,7 @@ public final class SettingsOverlayView extends View {
 
     private String labelFor(int row) {
         switch (row) {
+            case ROW_CPU_WARN: return "CPU 告警 %";
             case ROW_PORT: return "端口";
             case ROW_INTERVAL: return "刷新间隔 ms";
             case ROW_ROWS: return "进程行数";
@@ -355,6 +357,7 @@ public final class SettingsOverlayView extends View {
 
     private String rawValue(int row) {
         switch (row) {
+            case ROW_CPU_WARN: return String.valueOf(settings.cpuWarnPct);
             case ROW_PORT: return String.valueOf(settings.remotePort);
             case ROW_INTERVAL: return String.valueOf(settings.intervalMs);
             case ROW_ROWS: return String.valueOf(settings.procRows);
@@ -448,6 +451,9 @@ public final class SettingsOverlayView extends View {
             switch (row) {
                 case ROW_PORT:
                     settings.remotePort = clamp(Integer.parseInt(text), 1024, 65535);
+                    break;
+                case ROW_CPU_WARN:
+                    settings.cpuWarnPct = clamp(Integer.parseInt(text), 40, 99);
                     break;
                 case ROW_INTERVAL:
                     settings.intervalMs = clamp(Integer.parseInt(text), 100, 5000);
@@ -561,6 +567,11 @@ public final class SettingsOverlayView extends View {
             case ROW_TEMP_WARN:
                 label = "温度预警";
                 value = String.format(Locale.US, "%.0fC", settings.tempWarnC);
+                hasStep = true;
+                break;
+            case ROW_CPU_WARN:
+                label = "CPU 告警";
+                value = String.format(Locale.US, "%d%%", settings.cpuWarnPct);
                 hasStep = true;
                 break;
             case ROW_BATT_SCALE:
@@ -742,6 +753,9 @@ public final class SettingsOverlayView extends View {
         switch (row) {
             case ROW_PORT:
                 settings.remotePort = clamp(settings.remotePort + direction, 1024, 65535);
+                break;
+            case ROW_CPU_WARN:
+                settings.cpuWarnPct = clamp(settings.cpuWarnPct + direction, 40, 99);
                 break;
             case ROW_INTERVAL:
                 settings.intervalMs = clamp(settings.intervalMs + direction * 100, 100, 5000);

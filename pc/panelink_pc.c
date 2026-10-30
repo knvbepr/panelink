@@ -733,6 +733,29 @@ static void fill_extra_sensors(void) {
     }
 }
 
+static void dedupe_sensors(void) {
+    for (int i = 0; i < g_temp_count; i++) {
+        for (int j = i + 1; j < g_temp_count; ) {
+            if (strcmp(g_temps[i].name, g_temps[j].name) == 0) {
+                for (int k = j; k < g_temp_count - 1; k++) g_temps[k] = g_temps[k + 1];
+                g_temp_count--;
+            } else {
+                j++;
+            }
+        }
+    }
+    for (int i = 0; i < g_fan_count; i++) {
+        for (int j = i + 1; j < g_fan_count; ) {
+            if (strcmp(g_fans[i].name, g_fans[j].name) == 0) {
+                for (int k = j; k < g_fan_count - 1; k++) g_fans[k] = g_fans[k + 1];
+                g_fan_count--;
+            } else {
+                j++;
+            }
+        }
+    }
+}
+
 static void collect_state(void) {
     sample_cpu();
     sample_disks();
@@ -741,6 +764,7 @@ static void collect_state(void) {
     sample_wmi();
     fill_extra_sensors();
     sample_lhm();
+    dedupe_sensors();
 }
 
 static void build_json(char *buf, size_t cap) {
@@ -1227,7 +1251,7 @@ static DWORD WINAPI tray_thread(LPVOID unused) {
     nid.uCallbackMessage = WM_TRAY_ICON;
     nid.hIcon = g_tray_icon;
     char tip[128];
-    snprintf(tip, sizeof(tip), "PANELINK  %s  :%d  v1.5.0", g_name, g_port);
+    snprintf(tip, sizeof(tip), "PANELINK  %s  :%d  v1.5.1", g_name, g_port);
     MultiByteToWideChar(CP_UTF8, 0, tip, -1, nid.szTip, 128);
     Shell_NotifyIconW(NIM_ADD, &nid);
 
